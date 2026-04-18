@@ -66,7 +66,7 @@ $templatedata = [
         'action'           => 'new',
     ]))->out(false),
     'error'           => $error,
-    'active_tab'      => 'catalog',
+    'active_catalog'  => true,
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),

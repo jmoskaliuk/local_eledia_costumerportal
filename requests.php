@@ -46,7 +46,7 @@ $success     = false;
 $error       = null;
 
 $navdata = [
-    'active_tab'       => 'requests',
+    'active_requests'  => true,
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
@@ -98,6 +98,33 @@ try {
 } catch (\moodle_exception $e) {
     $error = $e->getMessage();
 }
+
+$typemap = [
+    'plugin_request'     => 'request_plugin',
+    'feature_request'    => 'request_feature',
+    'storage_request'    => 'request_storage',
+    'consulting_request' => 'request_consulting',
+];
+
+$normalised = [];
+foreach ($requests as $req) {
+    $type   = is_array($req) ? ($req['request_type'] ?? '') : ($req->request_type ?? '');
+    $status = is_array($req) ? ($req['status'] ?? 'pending') : ($req->status ?? 'pending');
+    $msg    = is_array($req) ? ($req['message'] ?? '') : ($req->message ?? '');
+    $ts     = is_array($req) ? ($req['timecreated'] ?? 0) : ($req->timecreated ?? 0);
+    $normalised[] = [
+        'request_type'       => $type,
+        'request_type_label' => get_string($typemap[$type] ?? 'request_plugin', 'local_customerportal'),
+        'message'            => $msg,
+        'status'             => $status,
+        'status_label'       => get_string('request_status_' . $status, 'local_customerportal'),
+        'status_pending'     => $status === 'pending',
+        'status_synced'      => $status === 'synced',
+        'status_error'       => $status === 'error',
+        'timecreated_str'    => $ts > 0 ? userdate((int)$ts) : '',
+    ];
+}
+$requests = $normalised;
 
 $templatedata = array_merge($navdata, [
     'show_form'    => false,

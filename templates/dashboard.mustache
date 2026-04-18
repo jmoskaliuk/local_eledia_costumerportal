@@ -11,10 +11,41 @@
     <div class="alert alert-warning">{{error}}</div>
     {{/error}}
 
-    {{^error}}
-    {{^installation}}
-    <p class="text-muted">{{#str}} dashboard_no_installation, local_customerportal {{/str}}</p>
-    {{/installation}}
+    {{! Site stats — always visible }}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} installation_registered_users, local_customerportal {{/str}}</h5>
+                    <p class="card-text fs-2 fw-bold">{{siteinfo_registered}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} installation_active_users, local_customerportal {{/str}}</h5>
+                    <p class="card-text fs-2 fw-bold">{{siteinfo_active}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} installation_courses, local_customerportal {{/str}}</h5>
+                    <p class="card-text fs-2 fw-bold">{{siteinfo_courses}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} installation_moodleversion, local_customerportal {{/str}}</h5>
+                    <p class="card-text fs-2 fw-bold">{{siteinfo_release}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{#installation}}
     <div class="row mb-4">
@@ -23,7 +54,9 @@
                 <div class="card-body">
                     <h5 class="card-title">{{#str}} installation_heading, local_customerportal {{/str}}</h5>
                     <p class="card-text">{{label}}</p>
-                    <p class="card-text text-muted small">{{moodle_version}}</p>
+                    <p class="card-text text-muted small">
+                        <a href="{{url_installation}}">{{moodle_version}}</a>
+                    </p>
                     <a href="{{url_installation}}" class="btn btn-outline-secondary btn-sm">
                         {{#str}} nav_installation, local_customerportal {{/str}}
                     </a>
@@ -34,7 +67,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">{{#str}} nav_myplugins, local_customerportal {{/str}}</h5>
-                    <p class="card-text display-6">{{plugin_count}}</p>
+                    <p class="card-text fs-2 fw-bold">{{plugin_count}}</p>
                     <a href="{{url_myplugins}}" class="btn btn-outline-secondary btn-sm">
                         {{#str}} nav_myplugins, local_customerportal {{/str}}
                     </a>
@@ -45,7 +78,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">{{#str}} dashboard_open_requests, local_customerportal {{/str}}</h5>
-                    <p class="card-text display-6">{{open_request_count}}</p>
+                    <p class="card-text fs-2 fw-bold">{{open_request_count}}</p>
                     <a href="{{url_requests}}" class="btn btn-outline-secondary btn-sm">
                         {{#str}} nav_requests, local_customerportal {{/str}}
                     </a>
@@ -53,6 +86,12 @@
             </div>
         </div>
     </div>
+    {{/installation}}
+
+    {{^installation}}
+    {{^error}}
+    <p class="text-muted">{{#str}} dashboard_no_installation, local_customerportal {{/str}}</p>
+    {{/error}}
     {{/installation}}
 
     {{#has_recommendations}}
@@ -73,5 +112,4 @@
         {{/recommendations}}
     </div>
     {{/has_recommendations}}
-    {{/error}}
 </div>

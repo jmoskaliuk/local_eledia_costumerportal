@@ -37,6 +37,7 @@ $PAGE->set_pagelayout('standard');
 $installationsvc = new \local_customerportal\local\installation_service();
 $requestsvc      = new \local_customerportal\local\request_service();
 $catalogsvc      = new \local_customerportal\local\catalog_service();
+$siteinfosvc     = new \local_customerportal\local\site_info_service();
 
 $installation   = [];
 $openplugincount = 0;
@@ -72,18 +73,27 @@ try {
     $error = $e->getMessage();
 }
 
+$userstats = $siteinfosvc->get_user_stats();
+$courses   = $siteinfosvc->get_course_count();
+$release   = $siteinfosvc->get_moodle_release();
+
 $templatedata = [
-    'installation'       => $installation,
-    'plugin_count'       => $openplugincount,
-    'open_request_count' => count($openrequests),
-    'recommendations'    => $recommendations,
+    'installation'        => $installation,
+    'plugin_count'        => $openplugincount,
+    'open_request_count'  => count($openrequests),
+    'recommendations'     => $recommendations,
     'has_recommendations' => !empty($recommendations),
-    'error'              => $error,
-    'url_installation'   => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
-    'url_myplugins'      => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
-    'url_catalog'        => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
-    'url_requests'       => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
-    'active_tab'         => 'dashboard',
+    'error'               => $error,
+    'url_dashboard'       => (new \moodle_url('/local/customerportal/index.php'))->out(false),
+    'url_installation'    => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
+    'url_myplugins'       => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
+    'url_catalog'         => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
+    'url_requests'        => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
+    'active_dashboard'    => true,
+    'siteinfo_registered' => $userstats['registered'],
+    'siteinfo_active'     => $userstats['active'],
+    'siteinfo_courses'    => $courses,
+    'siteinfo_release'    => $release,
 ];
 
 echo $OUTPUT->header();

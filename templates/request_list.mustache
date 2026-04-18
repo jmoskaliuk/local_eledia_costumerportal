@@ -32,18 +32,20 @@
                 <th>{{#str}} request_type, local_customerportal {{/str}}</th>
                 <th>Status</th>
                 <th>{{#str}} request_message, local_customerportal {{/str}}</th>
+                <th>{{#str}} request_date, local_customerportal {{/str}}</th>
             </tr>
         </thead>
         <tbody>
             {{#requests}}
             <tr>
-                <td>{{request_type}}</td>
+                <td>{{request_type_label}}</td>
                 <td>
                     <span class="badge {{#status_synced}}bg-success{{/status_synced}}{{#status_pending}}bg-warning{{/status_pending}}{{#status_error}}bg-danger{{/status_error}}">
-                        {{status}}
+                        {{status_label}}
                     </span>
                 </td>
                 <td>{{message}}</td>
+                <td>{{timecreated_str}}</td>
             </tr>
             {{/requests}}
         </tbody>
