@@ -1,0 +1,77 @@
+{{!
+    Dashboard page.
+    @template local_customerportal/dashboard
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{^error}}
+    {{^installation}}
+    <p class="text-muted">{{#str}} dashboard_no_installation, local_customerportal {{/str}}</p>
+    {{/installation}}
+
+    {{#installation}}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} installation_heading, local_customerportal {{/str}}</h5>
+                    <p class="card-text">{{label}}</p>
+                    <p class="card-text text-muted small">{{moodle_version}}</p>
+                    <a href="{{url_installation}}" class="btn btn-outline-secondary btn-sm">
+                        {{#str}} nav_installation, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} nav_myplugins, local_customerportal {{/str}}</h5>
+                    <p class="card-text display-6">{{plugin_count}}</p>
+                    <a href="{{url_myplugins}}" class="btn btn-outline-secondary btn-sm">
+                        {{#str}} nav_myplugins, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} dashboard_open_requests, local_customerportal {{/str}}</h5>
+                    <p class="card-text display-6">{{open_request_count}}</p>
+                    <a href="{{url_requests}}" class="btn btn-outline-secondary btn-sm">
+                        {{#str}} nav_requests, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/installation}}
+
+    {{#has_recommendations}}
+    <h5>{{#str}} dashboard_recommendations, local_customerportal {{/str}}</h5>
+    <div class="row">
+        {{#recommendations}}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">{{title}}</h6>
+                    <p class="card-text small text-muted">{{teaser}}</p>
+                    <a href="{{url_detail}}" class="btn btn-primary btn-sm">
+                        {{#str}} plugin_heading, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{/recommendations}}
+    </div>
+    {{/has_recommendations}}
+    {{/error}}
+</div>

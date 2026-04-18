@@ -1,0 +1,28 @@
+{{!
+    Portal tab navigation.
+    @template local_customerportal/nav_tabs
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<ul class="nav nav-tabs mb-4 path-local-customerportal-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link {{#active_dashboard}}active{{/active_dashboard}}"
+           href="{{url_dashboard}}">{{#str}} nav_dashboard, local_customerportal {{/str}}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#active_installation}}active{{/active_installation}}"
+           href="{{url_installation}}">{{#str}} nav_installation, local_customerportal {{/str}}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#active_myplugins}}active{{/active_myplugins}}"
+           href="{{url_myplugins}}">{{#str}} nav_myplugins, local_customerportal {{/str}}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#active_catalog}}active{{/active_catalog}}"
+           href="{{url_catalog}}">{{#str}} nav_catalog, local_customerportal {{/str}}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#active_requests}}active{{/active_requests}}"
+           href="{{url_requests}}">{{#str}} nav_requests, local_customerportal {{/str}}</a>
+    </li>
+</ul>

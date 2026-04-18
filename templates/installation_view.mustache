@@ -1,0 +1,39 @@
+{{!
+    My Installation page.
+    @template local_customerportal/installation_view
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{^error}}
+    {{#installation}}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{label}}</h5>
+            <table class="table table-sm generaltable">
+                <tbody>
+                    <tr>
+                        <th scope="row">{{#str}} installation_moodleversion, local_customerportal {{/str}}</th>
+                        <td>{{moodle_version}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_profile, local_customerportal {{/str}}</th>
+                        <td>{{profile}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_snapshotstatus, local_customerportal {{/str}}</th>
+                        <td>{{snapshot_status}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{/installation}}
+    {{/error}}
+</div>

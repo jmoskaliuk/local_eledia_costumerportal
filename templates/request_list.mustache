@@ -1,0 +1,58 @@
+{{!
+    Requests page — list and new request form.
+    @template local_customerportal/request_list
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{#show_form}}
+    <h4>{{#str}} request_create_heading, local_customerportal {{/str}}</h4>
+    {{{form_html}}}
+    {{/show_form}}
+
+    {{^show_form}}
+    {{#can_create}}
+    <div class="mb-3">
+        <a href="{{url_new}}" class="btn btn-primary">
+            {{#str}} request_new, local_customerportal {{/str}}
+        </a>
+    </div>
+    {{/can_create}}
+
+    {{#has_requests}}
+    <table class="table table-sm table-hover generaltable">
+        <thead>
+            <tr>
+                <th>{{#str}} request_type, local_customerportal {{/str}}</th>
+                <th>Status</th>
+                <th>{{#str}} request_message, local_customerportal {{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#requests}}
+            <tr>
+                <td>{{request_type}}</td>
+                <td>
+                    <span class="badge {{#status_synced}}bg-success{{/status_synced}}{{#status_pending}}bg-warning{{/status_pending}}{{#status_error}}bg-danger{{/status_error}}">
+                        {{status}}
+                    </span>
+                </td>
+                <td>{{message}}</td>
+            </tr>
+            {{/requests}}
+        </tbody>
+    </table>
+    {{/has_requests}}
+    {{^has_requests}}
+    {{^error}}
+    <p class="text-muted">{{#str}} request_no_requests, local_customerportal {{/str}}</p>
+    {{/error}}
+    {{/has_requests}}
+    {{/show_form}}
+</div>

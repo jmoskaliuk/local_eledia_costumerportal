@@ -1,0 +1,56 @@
+{{!
+    My Plugins page.
+    @template local_customerportal/plugin_list
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{^error}}
+    {{#has_plugins}}
+    <table class="table table-sm table-hover generaltable">
+        <thead>
+            <tr>
+                <th>{{#str}} installation_label, local_customerportal {{/str}}</th>
+                <th>{{#str}} installation_moodleversion, local_customerportal {{/str}}</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#plugins}}
+            <tr>
+                <td>
+                    {{display_name}}
+                    {{#has_proven}}
+                    <span class="badge bg-success ms-1">{{proven_badge}}</span>
+                    {{/has_proven}}
+                </td>
+                <td><code>{{installed_version}}</code></td>
+                <td>
+                    <span class="badge {{#status_installed}}bg-success{{/status_installed}}{{#status_outdated}}bg-warning{{/status_outdated}}{{#status_deprecated}}bg-danger{{/status_deprecated}}">
+                        {{status_label}}
+                    </span>
+                </td>
+                <td>
+                    {{#has_catalog_entry}}
+                    <a href="{{url_detail}}" class="btn btn-outline-secondary btn-sm">
+                        {{#str}} plugin_heading, local_customerportal {{/str}}
+                    </a>
+                    {{/has_catalog_entry}}
+                </td>
+            </tr>
+            {{/plugins}}
+        </tbody>
+    </table>
+    {{/has_plugins}}
+    {{^has_plugins}}
+    <p class="text-muted">{{#str}} myplugins_no_plugins, local_customerportal {{/str}}</p>
+    {{/has_plugins}}
+    {{/error}}
+</div>

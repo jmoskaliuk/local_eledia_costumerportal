@@ -1,0 +1,61 @@
+{{!
+    Plugin detail page (public catalog + installation overlay).
+    @template local_customerportal/catalog_detail
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{^has_entry}}
+    {{^error}}
+    <p class="text-muted">{{#str}} plugin_not_found, local_customerportal {{/str}}</p>
+    {{/error}}
+    {{/has_entry}}
+
+    {{#has_entry}}
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{entry.title}}</h2>
+            <p class="lead">{{entry.description_public}}</p>
+
+            {{#entry.proven_summary}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <span class="badge bg-success me-2">{{badge}}</span>
+                    {{summary}}
+                    <span class="text-muted small ms-2">{{#str}} plugin_proven_reviewed_at, local_customerportal {{/str}}: {{reviewed_at}}</span>
+                </div>
+            </div>
+            {{/entry.proven_summary}}
+
+            {{#entry.docs_url}}
+            <p>
+                <a href="{{entry.docs_url}}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary">
+                    {{#str}} plugin_docs, local_customerportal {{/str}}
+                </a>
+            </p>
+            {{/entry.docs_url}}
+
+            {{#entry.screenshots}}
+            <h5>{{#str}} plugin_screenshots, local_customerportal {{/str}}</h5>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                {{#entry.screenshots}}
+                <img src="{{url}}" alt="{{alt}}" class="img-thumbnail" style="max-width: 200px;">
+                {{/entry.screenshots}}
+            </div>
+            {{/entry.screenshots}}
+        </div>
+
+        <div class="col-md-4">
+            {{#has_overlay}}
+            {{> local_customerportal/catalog_overlay_block }}
+            {{/has_overlay}}
+        </div>
+    </div>
+    {{/has_entry}}
+</div>

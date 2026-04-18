@@ -1,0 +1,47 @@
+{{!
+    Plugin catalog list page.
+    @template local_customerportal/catalog_list
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal">
+    {{> local_customerportal/nav_tabs }}
+
+    <form method="get" action="" class="mb-4 d-flex gap-2">
+        <input type="text" name="q" value="{{q}}" class="form-control"
+               placeholder="{{#str}} catalog_search_placeholder, local_customerportal {{/str}}">
+        <button type="submit" class="btn btn-primary">{{#str}} catalog_heading, local_customerportal {{/str}}</button>
+    </form>
+
+    {{#error}}
+    <div class="alert alert-warning">{{error}}</div>
+    {{/error}}
+
+    {{^error}}
+    {{#has_entries}}
+    <div class="row">
+        {{#entries}}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        {{title}}
+                        {{#has_proven}}<span class="badge bg-success ms-1">{{proven_badge}}</span>{{/has_proven}}
+                        {{#is_installed}}<span class="badge bg-info ms-1">{{#str}} overlay_installed, local_customerportal {{/str}}</span>{{/is_installed}}
+                        {{#recommended}}<span class="badge bg-primary ms-1">{{#str}} overlay_recommended, local_customerportal {{/str}}</span>{{/recommended}}
+                    </h6>
+                    <p class="card-text small text-muted">{{teaser}}</p>
+                    <a href="{{url_detail}}" class="btn btn-outline-secondary btn-sm">
+                        {{#str}} plugin_heading, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{/entries}}
+    </div>
+    {{/has_entries}}
+    {{^has_entries}}
+    <p class="text-muted">{{#str}} catalog_no_results, local_customerportal {{/str}}</p>
+    {{/has_entries}}
+    {{/error}}
+</div>
