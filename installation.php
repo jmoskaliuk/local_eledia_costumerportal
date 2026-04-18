@@ -26,6 +26,9 @@ require_once(__DIR__ . '/../../config.php');
 
 require_login();
 $context = \core\context\system::instance();
+if (!get_capability_info('local/customerportal:view')) {
+    redirect(new \moodle_url('/'));
+}
 require_capability('local/customerportal:view', $context);
 
 $PAGE->set_url('/local/customerportal/installation.php');

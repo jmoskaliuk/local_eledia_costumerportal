@@ -26,6 +26,9 @@ require_once(__DIR__ . '/../../config.php');
 
 require_login();
 $context = \core\context\system::instance();
+if (!get_capability_info('local/customerportal:view')) {
+    redirect(new \moodle_url('/'));
+}
 require_capability('local/customerportal:view', $context);
 
 $slug = required_param('slug', PARAM_ALPHANUMEXT);
@@ -53,7 +56,8 @@ try {
     $error = $e->getMessage();
 }
 
-$cancreate = has_capability('local/customerportal:createrequest', $context);
+$cancreate = get_capability_info('local/customerportal:createrequest')
+    && has_capability('local/customerportal:createrequest', $context);
 
 $templatedata = [
     'entry'           => $entry,

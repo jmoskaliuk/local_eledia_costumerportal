@@ -26,6 +26,9 @@ require_once(__DIR__ . '/../../config.php');
 
 require_login();
 $context = \core\context\system::instance();
+if (!get_capability_info('local/customerportal:view')) {
+    redirect(new \moodle_url('/'));
+}
 require_capability('local/customerportal:view', $context);
 
 $action        = optional_param('action', 'list', PARAM_ALPHA);
@@ -38,7 +41,8 @@ $PAGE->set_heading(get_string('request_heading', 'local_customerportal'));
 $PAGE->set_pagelayout('standard');
 
 $requestsvc  = new \local_customerportal\local\request_service();
-$cancreate   = has_capability('local/customerportal:createrequest', $context);
+$cancreate   = get_capability_info('local/customerportal:createrequest')
+    && has_capability('local/customerportal:createrequest', $context);
 
 $requests    = [];
 $form        = null;
