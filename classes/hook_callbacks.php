@@ -42,6 +42,12 @@ class hook_callbacks {
             return;
         }
 
+        // Get_capability_info() guards against the debug notice fired by has_capability()
+        // when the plugin's capabilities are not yet registered in the DB (e.g. pending upgrade).
+        if (!get_capability_info('local/customerportal:view')) {
+            return;
+        }
+
         if (!has_capability('local/customerportal:view', $context)) {
             return;
         }
