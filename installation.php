@@ -35,8 +35,10 @@ $PAGE->set_heading(get_string('installation_heading', 'local_customerportal'));
 $PAGE->set_pagelayout('standard');
 
 $installationsvc = new \local_customerportal\local\installation_service();
-$installation    = [];
-$error           = null;
+$siteinfosvc     = new \local_customerportal\local\site_info_service();
+
+$installation = [];
+$error        = null;
 
 try {
     $installation = $installationsvc->get_installation();
@@ -44,15 +46,27 @@ try {
     $error = $e->getMessage();
 }
 
+$userstats = $siteinfosvc->get_user_stats();
+$croninfo  = $siteinfosvc->get_cron_info();
+$lastrun   = $croninfo['lastrun'];
+
 $templatedata = [
-    'installation' => $installation,
-    'error'        => $error,
-    'active_tab'   => 'installation',
+    'installation'    => $installation,
+    'error'           => $error,
+    'active_tab'      => 'installation',
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
     'url_catalog'      => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
     'url_requests'     => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
+    'siteinfo_release'    => $siteinfosvc->get_moodle_release(),
+    'siteinfo_registered' => $userstats['registered'],
+    'siteinfo_active'     => $userstats['active'],
+    'siteinfo_courses'    => $siteinfosvc->get_course_count(),
+    'siteinfo_lastcron'   => $lastrun > 0 ? userdate($lastrun) : get_string('never', 'local_customerportal'),
+    'siteinfo_cron_ok'    => $lastrun > 0 && (time() - $lastrun) < 900,
+    'siteinfo_failed'     => $croninfo['failed_tasks'],
+    'siteinfo_has_failed' => $croninfo['failed_tasks'] > 0,
 ];
 
 echo $OUTPUT->header();

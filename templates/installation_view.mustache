@@ -11,9 +11,8 @@
     <div class="alert alert-warning">{{error}}</div>
     {{/error}}
 
-    {{^error}}
     {{#installation}}
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">{{label}}</h5>
             <table class="table table-sm generaltable">
@@ -35,5 +34,44 @@
         </div>
     </div>
     {{/installation}}
-    {{/error}}
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{#str}} installation_local_heading, local_customerportal {{/str}}</h5>
+            <table class="table table-sm generaltable">
+                <tbody>
+                    <tr>
+                        <th scope="row">{{#str}} installation_moodleversion, local_customerportal {{/str}}</th>
+                        <td>{{siteinfo_release}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_registered_users, local_customerportal {{/str}}</th>
+                        <td>{{siteinfo_registered}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_active_users, local_customerportal {{/str}}</th>
+                        <td>{{siteinfo_active}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_courses, local_customerportal {{/str}}</th>
+                        <td>{{siteinfo_courses}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_cron_lastrun, local_customerportal {{/str}}</th>
+                        <td>
+                            {{#siteinfo_cron_ok}}<span class="badge bg-success">&#10003;</span>{{/siteinfo_cron_ok}}
+                            {{^siteinfo_cron_ok}}<span class="badge bg-warning text-dark">&#9888;</span>{{/siteinfo_cron_ok}}
+                            {{siteinfo_lastcron}}
+                        </td>
+                    </tr>
+                    {{#siteinfo_has_failed}}
+                    <tr>
+                        <th scope="row">{{#str}} installation_cron_failed_tasks, local_customerportal {{/str}}</th>
+                        <td><span class="badge bg-danger">{{siteinfo_failed}}</span></td>
+                    </tr>
+                    {{/siteinfo_has_failed}}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
