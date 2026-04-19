@@ -59,9 +59,13 @@ try {
 $cancreate = get_capability_info('local/customerportal:createrequest')
     && has_capability('local/customerportal:createrequest', $context);
 
+// Classification + maintainer blocks on detail (task26, Release 1.2).
+$classification = \local_customerportal\local\classification_presenter::present($entry);
+
 $templatedata = [
     'entry'           => $entry,
     'has_entry'       => !empty($entry),
+    'classification'  => $classification,
     'overlay'         => $overlay,
     'has_overlay'     => !empty($overlay),
     'can_create_request' => $cancreate && !empty($overlay['requestable']),

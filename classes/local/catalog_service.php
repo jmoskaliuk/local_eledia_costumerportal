@@ -34,9 +34,11 @@ class catalog_service {
 
     /**
      * Constructor.
+     *
+     * @param api_client|null $client Optional API client for testing.
      */
-    public function __construct() {
-        $this->client = new api_client();
+    public function __construct(?api_client $client = null) {
+        $this->client = $client ?? new api_client();
     }
 
     /**
@@ -68,7 +70,7 @@ class catalog_service {
      * @throws \moodle_exception If not found or API error.
      */
     public function get_detail(string $slug): array {
-        $cachekey = 'detail_' . $slug;
+        $cachekey = 'detail_' . md5($slug);
         $cache    = \cache::make('local_customerportal', 'catalogdetail');
 
         if ($cached = $cache->get($cachekey)) {
@@ -77,6 +79,10 @@ class catalog_service {
 
         $result = $this->client->catalog_get('/' . urlencode($slug));
         $data   = $result['data'] ?? [];
+
+        $runbotdemoid = trim((string) ($data['runbot_demo_id'] ?? ''));
+        $data['runbot_demo_id'] = $runbotdemoid === '' ? null : $runbotdemoid;
+
         $cache->set($cachekey, $data);
 
         return $data;

@@ -42,6 +42,9 @@ class api_client {
      * Constructor — reads connection settings from plugin config.
      */
     public function __construct() {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
+
         $this->baseurl    = rtrim((string) get_config('local_customerportal', 'directus_url'), '/');
         $this->token      = (string) get_config('local_customerportal', 'directus_token');
         $this->catalogurl = rtrim((string) get_config('local_customerportal', 'public_catalog_url'), '/');
