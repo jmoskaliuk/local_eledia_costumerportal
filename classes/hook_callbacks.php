@@ -52,15 +52,16 @@ class hook_callbacks {
             return;
         }
 
+        // The primary view's add() method expects the individual navigation_node
+        // parameters — passing a pre-built node object lands as $text and the
+        // Boost drawer template blows up on stringification.
         $hook->get_primaryview()->add(
-            \navigation_node::create(
-                get_string('pluginname', 'local_customerportal'),
-                new \moodle_url('/local/customerportal/index.php'),
-                \navigation_node::TYPE_CUSTOM,
-                null,
-                'local_customerportal',
-                new \pix_icon('i/dashboard', '')
-            )
+            get_string('pluginname', 'local_customerportal'),
+            new \moodle_url('/local/customerportal/index.php'),
+            \navigation_node::TYPE_CUSTOM,
+            null,
+            'local_customerportal',
+            new \pix_icon('i/dashboard', '')
         );
     }
 }
