@@ -92,6 +92,7 @@ $string['myplugins_status_header'] = 'Status';
 $string['myplugins_status_installed'] = 'Installed';
 $string['myplugins_status_outdated'] = 'Outdated';
 $string['myplugins_status_removed'] = 'Removed';
+$string['myplugins_type_other'] = 'Other';
 $string['myplugins_version'] = 'Version';
 $string['nav_catalog'] = 'Catalog';
 $string['nav_dashboard'] = 'Dashboard';

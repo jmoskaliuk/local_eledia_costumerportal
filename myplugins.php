@@ -38,7 +38,8 @@ $PAGE->set_heading(get_string('myplugins_heading', 'local_customerportal'));
 $PAGE->set_pagelayout('standard');
 
 $installationsvc = new \local_customerportal\local\installation_service();
-$plugins         = [];
+$pluginman       = \core_plugin_manager::instance();
+$plugingroups    = [];
 $error           = null;
 $hassynced       = true;
 
@@ -47,11 +48,46 @@ try {
     $rawplugins = $installationsvc->get_installed_plugins();
 
     foreach ($rawplugins as $plugin) {
+        $frankenstyle = trim((string) ($plugin['frankenstyle'] ?? ''));
+        $plugininfo = $frankenstyle !== '' ? $pluginman->get_plugin_info($frankenstyle) : null;
+
+        // Show only add-ons here. Standard Moodle plugins belong to core, not "My Plugins".
+        if ($plugininfo && $plugininfo->is_standard()) {
+            continue;
+        }
+
         $status = (string) ($plugin['status'] ?? 'installed');
         $knownstatus = in_array($status, ['installed', 'outdated', 'deprecated', 'removed'], true);
         $slug = $plugin['slug'] ?? null;
-        $plugins[] = [
-            'frankenstyle'      => $plugin['frankenstyle'] ?? '',
+        $plugintype = clean_param((string) ($plugin['plugin_type'] ?? ''), PARAM_ALPHANUMEXT);
+        if ($plugintype === '') {
+            $plugintype = $plugininfo->type ?? '';
+        }
+        if ($plugintype === '' && strpos($frankenstyle, '_') !== false) {
+            [$plugintype] = explode('_', $frankenstyle, 2);
+        }
+        if ($plugintype === '') {
+            $plugintype = 'other';
+        }
+
+        try {
+            $typelabel = $plugintype === 'other'
+                ? get_string('myplugins_type_other', 'local_customerportal')
+                : $pluginman->plugintype_name_plural($plugintype);
+        } catch (\Throwable $e) {
+            $typelabel = get_string('myplugins_type_other', 'local_customerportal');
+        }
+
+        if (!isset($plugingroups[$plugintype])) {
+            $plugingroups[$plugintype] = [
+                'type' => $plugintype,
+                'type_label' => $typelabel,
+                'plugins' => [],
+            ];
+        }
+
+        $plugingroups[$plugintype]['plugins'][] = [
+            'frankenstyle'      => $frankenstyle,
             'display_name'      => $plugin['display_name'] ?? $plugin['frankenstyle'] ?? '',
             'installed_version' => $plugin['installed_version'] ?? '',
             'proven_badge'      => $plugin['proven_badge'] ?? null,
@@ -72,17 +108,28 @@ try {
                 : null,
         ];
     }
+
+    foreach ($plugingroups as &$group) {
+        usort($group['plugins'], static function(array $left, array $right): int {
+            return strnatcasecmp($left['display_name'], $right['display_name']);
+        });
+    }
+    unset($group);
+
+    uasort($plugingroups, static function(array $left, array $right): int {
+        return strnatcasecmp($left['type_label'], $right['type_label']);
+    });
 } catch (\moodle_exception $e) {
     $error = $e->getMessage();
 }
 
 $templatedata = [
-    'plugins'     => $plugins,
-    'has_plugins' => !empty($plugins),
+    'plugin_groups' => array_values($plugingroups),
+    'has_plugins'   => !empty($plugingroups),
     // Distinguish "synced with zero plugins" from "never synced yet" so the
     // portal can render an explicit not-yet-synchronised state (task37)
     // instead of the generic empty-list message.
-    'never_synced'     => !$hassynced && empty($plugins),
+    'never_synced'     => !$hassynced && empty($plugingroups),
     'error'            => $error,
     'active_myplugins' => true,
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),

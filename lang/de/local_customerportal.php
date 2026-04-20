@@ -58,6 +58,7 @@ $string['maintenance_actively_maintained'] = 'Aktiv gepflegt';
 $string['maintenance_looking_for_maintainer'] = 'Sucht Maintainer';
 $string['maintenance_orphaned'] = 'Verwaist';
 $string['maintenance_unknown'] = 'Wartung unbekannt';
+$string['myplugins_type_other'] = 'Sonstige';
 $string['myplugins_never_synced'] = 'Der Plugin-Sync wurde noch nicht ausgeführt. Sobald der geplante Task "Customer Portal — Plugin-Sync" durchgelaufen ist, erscheinen installierte Plugins hier.';
 $string['myplugins_status_header'] = 'Status';
 $string['myplugins_status_removed'] = 'Entfernt';
