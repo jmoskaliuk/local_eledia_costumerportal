@@ -68,4 +68,101 @@ if ($hassiteconfig) {
         '',
         PARAM_URL
     ));
+
+    // Installation digital-twin attributes (task33/35) shipped by the snapshot
+    // sync task. Defaults match the common managed-LMS tier so an unconfigured
+    // plugin still produces a valid snapshot payload.
+    $settings->add(new admin_setting_heading(
+        'local_customerportal/settings_installation_heading',
+        get_string('settings_installation_heading', 'local_customerportal'),
+        get_string('settings_installation_heading_desc', 'local_customerportal')
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_customerportal/site_label',
+        get_string('settings_site_label', 'local_customerportal'),
+        get_string('settings_site_label_desc', 'local_customerportal'),
+        '',
+        PARAM_TEXT
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_customerportal/flavour',
+        get_string('settings_flavour', 'local_customerportal'),
+        get_string('settings_flavour_desc', 'local_customerportal'),
+        'lms',
+        [
+            'lms'       => get_string('settings_flavour_lms', 'local_customerportal'),
+            'workplace' => get_string('settings_flavour_workplace', 'local_customerportal'),
+        ]
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_customerportal/release_channel',
+        get_string('settings_release_channel', 'local_customerportal'),
+        get_string('settings_release_channel_desc', 'local_customerportal'),
+        'lts',
+        [
+            'lts'    => get_string('settings_release_channel_lts', 'local_customerportal'),
+            'newest' => get_string('settings_release_channel_newest', 'local_customerportal'),
+        ]
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_customerportal/profile',
+        get_string('settings_profile', 'local_customerportal'),
+        get_string('settings_profile_desc', 'local_customerportal'),
+        'managed',
+        [
+            'managed'     => get_string('settings_profile_managed', 'local_customerportal'),
+            'self_hosted' => get_string('settings_profile_self_hosted', 'local_customerportal'),
+            'demo'        => get_string('settings_profile_demo', 'local_customerportal'),
+        ]
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_customerportal/sla_level',
+        get_string('settings_sla_level', 'local_customerportal'),
+        get_string('settings_sla_level_desc', 'local_customerportal'),
+        'level_1',
+        [
+            'level_1' => get_string('settings_sla_level_1', 'local_customerportal'),
+            'level_2' => get_string('settings_sla_level_2', 'local_customerportal'),
+        ]
+    ));
+
+    $settings->add(new admin_setting_configselect(
+        'local_customerportal/user_tier',
+        get_string('settings_user_tier', 'local_customerportal'),
+        get_string('settings_user_tier_desc', 'local_customerportal'),
+        '250',
+        [
+            '250'  => '250',
+            '500'  => '500',
+            '1000' => '1000',
+            '2000' => '2000',
+        ]
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'local_customerportal/addon_bbb_enabled',
+        get_string('settings_addon_bbb_enabled', 'local_customerportal'),
+        get_string('settings_addon_bbb_enabled_desc', 'local_customerportal'),
+        0
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'local_customerportal/addon_solr_enabled',
+        get_string('settings_addon_solr_enabled', 'local_customerportal'),
+        get_string('settings_addon_solr_enabled_desc', 'local_customerportal'),
+        0
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_customerportal/storage_quota_gb',
+        get_string('settings_storage_quota_gb', 'local_customerportal'),
+        get_string('settings_storage_quota_gb_desc', 'local_customerportal'),
+        '',
+        PARAM_FLOAT
+    ));
 }

@@ -40,26 +40,35 @@ $PAGE->set_pagelayout('standard');
 $installationsvc = new \local_customerportal\local\installation_service();
 $plugins         = [];
 $error           = null;
+$hassynced       = true;
 
 try {
+    $hassynced = $installationsvc->has_synced();
     $rawplugins = $installationsvc->get_installed_plugins();
 
     foreach ($rawplugins as $plugin) {
+        $status = (string) ($plugin['status'] ?? 'installed');
+        $knownstatus = in_array($status, ['installed', 'outdated', 'deprecated', 'removed'], true);
+        $slug = $plugin['slug'] ?? null;
         $plugins[] = [
             'frankenstyle'      => $plugin['frankenstyle'] ?? '',
             'display_name'      => $plugin['display_name'] ?? $plugin['frankenstyle'] ?? '',
             'installed_version' => $plugin['installed_version'] ?? '',
             'proven_badge'      => $plugin['proven_badge'] ?? null,
             'has_proven'        => !empty($plugin['proven_badge']),
-            'status'            => $plugin['status'] ?? 'installed',
+            'status'            => $status,
             'status_label'      => get_string(
-                'myplugins_status_' . ($plugin['status'] ?? 'installed'),
+                'myplugins_status_' . ($knownstatus ? $status : 'installed'),
                 'local_customerportal'
             ),
+            'status_installed'  => $status === 'installed',
+            'status_outdated'   => $status === 'outdated',
+            'status_deprecated' => $status === 'deprecated',
+            'status_removed'    => $status === 'removed',
             'catalog_entry_id'  => $plugin['catalog_entry_id'] ?? null,
-            'has_catalog_entry' => !empty($plugin['catalog_entry_id']),
-            'url_detail'        => !empty($plugin['slug'])
-                ? (new \moodle_url('/local/customerportal/plugin.php', ['slug' => $plugin['slug']]))->out(false)
+            'has_catalog_entry' => !empty($plugin['catalog_entry_id']) && !empty($slug),
+            'url_detail'        => !empty($slug)
+                ? (new \moodle_url('/local/customerportal/plugin.php', ['slug' => $slug]))->out(false)
                 : null,
         ];
     }
@@ -70,7 +79,11 @@ try {
 $templatedata = [
     'plugins'     => $plugins,
     'has_plugins' => !empty($plugins),
-    'error'       => $error,
+    // Distinguish "synced with zero plugins" from "never synced yet" so the
+    // portal can render an explicit not-yet-synchronised state (task37)
+    // instead of the generic empty-list message.
+    'never_synced'     => !$hassynced && empty($plugins),
+    'error'            => $error,
     'active_myplugins' => true,
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),

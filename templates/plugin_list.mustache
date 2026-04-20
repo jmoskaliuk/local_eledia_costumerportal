@@ -18,7 +18,7 @@
             <tr>
                 <th>{{#str}} installation_label, local_customerportal {{/str}}</th>
                 <th>{{#str}} myplugins_version, local_customerportal {{/str}}</th>
-                <th>Status</th>
+                <th>{{#str}} myplugins_status_header, local_customerportal {{/str}}</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,7 +33,11 @@
                 </td>
                 <td><code>{{installed_version}}</code></td>
                 <td>
-                    <span class="badge {{#status_installed}}bg-success{{/status_installed}}{{#status_outdated}}bg-warning{{/status_outdated}}{{#status_deprecated}}bg-danger{{/status_deprecated}}">
+                    <span class="badge
+                        {{#status_installed}}bg-success{{/status_installed}}
+                        {{#status_outdated}}bg-warning text-dark{{/status_outdated}}
+                        {{#status_deprecated}}bg-danger{{/status_deprecated}}
+                        {{#status_removed}}bg-secondary{{/status_removed}}">
                         {{status_label}}
                     </span>
                 </td>
@@ -50,7 +54,14 @@
     </table>
     {{/has_plugins}}
     {{^has_plugins}}
+    {{#never_synced}}
+    <div class="alert alert-info">
+        {{#str}} myplugins_never_synced, local_customerportal {{/str}}
+    </div>
+    {{/never_synced}}
+    {{^never_synced}}
     <p class="text-muted">{{#str}} myplugins_no_plugins, local_customerportal {{/str}}</p>
+    {{/never_synced}}
     {{/has_plugins}}
     {{/error}}
 </div>

@@ -36,11 +36,16 @@ class installation_service {
     private string $installationid;
 
     /**
-     * Constructor — reads installation ID from plugin config.
+     * Constructor — reads installation ID from plugin config, with injection
+     * hooks so unit tests can drive both collaborators deterministically.
+     *
+     * @param api_client|null $client         Optional API client.
+     * @param string|null     $installationid Optional override for the configured UUID.
      */
-    public function __construct() {
-        $this->client         = new api_client();
-        $this->installationid = (string) get_config('local_customerportal', 'installation_id');
+    public function __construct(?api_client $client = null, ?string $installationid = null) {
+        $this->client = $client ?? new api_client();
+        $this->installationid = $installationid
+            ?? (string) get_config('local_customerportal', 'installation_id');
     }
 
     /**
@@ -67,7 +72,7 @@ class installation_service {
      */
     public function get_installation(): array {
         $id       = $this->get_installation_id();
-        $cachekey = 'install_' . $id;
+        $cachekey = 'install_' . md5($id);
         $cache    = \cache::make('local_customerportal', 'installationdata');
 
         if ($cached = $cache->get($cachekey)) {
@@ -89,10 +94,11 @@ class installation_service {
      */
     public function get_installed_plugins(): array {
         $id       = $this->get_installation_id();
-        $cachekey = 'plugins_' . $id;
+        $cachekey = 'plugins_' . md5($id);
         $cache    = \cache::make('local_customerportal', 'installationdata');
 
-        if ($cached = $cache->get($cachekey)) {
+        $cached = $cache->get($cachekey);
+        if ($cached !== false) {
             return $cached;
         }
 
@@ -101,6 +107,49 @@ class installation_service {
         $cache->set($cachekey, $data);
 
         return $data;
+    }
+
+    /**
+     * True when the `installation` row has a `last_sync_at` — i.e. the snapshot
+     * cron has reached Directus at least once. Used by the portal to tell
+     * "never synced yet" from "synced with no plugins".
+     *
+     * @return bool
+     * @throws \moodle_exception
+     */
+    public function has_synced(): bool {
+        $installation = $this->get_installation();
+        $lastsync = $installation['last_sync_at'] ?? null;
+        return is_string($lastsync) && $lastsync !== '';
+    }
+
+    /**
+     * Drop cached `install_*` / `plugins_*` / `overlay_*` entries for this
+     * installation. Called after the snapshot/plugin-sync cron tasks succeed
+     * so the portal immediately reflects the fresh state.
+     */
+    public function invalidate_caches(): void {
+        $id = (string) $this->installationid;
+        if ($id === '') {
+            return;
+        }
+
+        $installationkey = md5($id);
+        try {
+            $installcache = \cache::make('local_customerportal', 'installationdata');
+            $installcache->delete('install_' . $installationkey);
+            $installcache->delete('plugins_' . $installationkey);
+        } catch (\Exception $e) {
+            debugging('installation cache invalidation failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+
+        try {
+            $overlaycache = \cache::make('local_customerportal', 'overlaydata');
+            // Overlay keys include the catalog entry id; purge the whole store for this installation.
+            $overlaycache->purge();
+        } catch (\Exception $e) {
+            debugging('overlay cache invalidation failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 
     /**
@@ -114,7 +163,7 @@ class installation_service {
      */
     public function get_overlay(string $catalogentryid): array {
         $id       = $this->get_installation_id();
-        $cachekey = 'overlay_' . $id . '_' . $catalogentryid;
+        $cachekey = 'overlay_' . md5($id . '|' . $catalogentryid);
         $cache    = \cache::make('local_customerportal', 'overlaydata');
 
         if ($cached = $cache->get($cachekey)) {
