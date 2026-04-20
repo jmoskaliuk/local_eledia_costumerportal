@@ -65,6 +65,34 @@ class installation_service {
     }
 
     /**
+     * Returns the configured installation ID without throwing.
+     *
+     * @return string
+     */
+    public function get_optional_installation_id(): string {
+        return trim($this->installationid);
+    }
+
+    /**
+     * Whether an installation ID is currently configured.
+     *
+     * @return bool
+     */
+    public function has_installation_id(): bool {
+        return $this->get_optional_installation_id() !== '';
+    }
+
+    /**
+     * Update the in-memory installation ID after a successful registration.
+     *
+     * @param string $installationid
+     * @return void
+     */
+    public function set_installation_id(string $installationid): void {
+        $this->installationid = trim($installationid);
+    }
+
+    /**
      * Fetch installation stammdaten from Directus.
      *
      * @return array Keys: id, label, moodle_version, profile, snapshot_status, contact_email.

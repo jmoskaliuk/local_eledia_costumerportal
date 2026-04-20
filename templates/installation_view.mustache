@@ -37,6 +37,42 @@
 
     <div class="card mb-3">
         <div class="card-body">
+            <h5 class="card-title">{{#str}} installation_sync_heading, local_customerportal {{/str}}</h5>
+            <table class="table table-sm generaltable">
+                <tbody>
+                    <tr>
+                        <th scope="row">{{#str}} installation_registration_status, local_customerportal {{/str}}</th>
+                        <td>{{installation_registration_status_text}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} settings_installation_id, local_customerportal {{/str}}</th>
+                        <td>
+                            {{#has_installation_id}}{{installation_id}}{{/has_installation_id}}
+                            {{^has_installation_id}}{{#str}} installation_status_missing, local_customerportal {{/str}}{{/has_installation_id}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_sync_status, local_customerportal {{/str}}</th>
+                        <td>{{installation_sync_status_text}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{#str}} installation_last_registration_at, local_customerportal {{/str}}</th>
+                        <td>{{installation_last_registration_at}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {{#can_register_installation}}
+            <form method="post" action="{{registration_action}}" class="mt-3">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <button type="submit" class="btn btn-primary">{{registration_button_text}}</button>
+            </form>
+            {{/can_register_installation}}
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
             <h5 class="card-title">{{#str}} installation_local_heading, local_customerportal {{/str}}</h5>
             <table class="table table-sm generaltable">
                 <tbody>

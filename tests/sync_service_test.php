@@ -118,6 +118,180 @@ final class sync_service_test extends \advanced_testcase {
     }
 
     /**
+     * Registration payload omits the id for first-time registrations.
+     */
+    public function test_build_registration_payload_omits_id_when_not_configured(): void {
+        $service = new sync_service(
+            $this->create_passthrough_client(),
+            new installation_service($this->create_passthrough_client(), ''),
+            0
+        );
+
+        $payload = $service->build_registration_payload();
+
+        $this->assertArrayNotHasKey('id', $payload);
+    }
+
+    /**
+     * Manual registration stores the returned UUID and success markers.
+     */
+    public function test_register_installation_stores_returned_uuid(): void {
+        set_config('directus_url', 'https://directus.example.test', 'local_customerportal');
+        set_config('directus_token', 'secret-token', 'local_customerportal');
+        set_config('installation_id', '', 'local_customerportal');
+        set_config('installation_registered', 0, 'local_customerportal');
+
+        $client = new class () extends api_client {
+            public array $receivedbodies = [];
+
+            public function __construct() {
+            }
+
+            public function post(string $path, array $body): array {
+                $this->receivedbodies[] = $body;
+
+                return [
+                    'data' => [
+                        'id' => '11111111-1111-4111-8111-111111111111',
+                    ],
+                ];
+            }
+        };
+
+        $installationsvc = new installation_service($client, '');
+        $service = new sync_service($client, $installationsvc, 0);
+        $result = $service->register_installation();
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('11111111-1111-4111-8111-111111111111', $result['id']);
+        $this->assertSame('created', $result['mode']);
+        $this->assertArrayNotHasKey('id', $client->receivedbodies[0]);
+        $this->assertSame('11111111-1111-4111-8111-111111111111', get_config('local_customerportal', 'installation_id'));
+        $this->assertSame('1', get_config('local_customerportal', 'installation_registered'));
+        $this->assertGreaterThan(0, (int) get_config('local_customerportal', 'last_registration_at'));
+    }
+
+    /**
+     * Manual re-registration keeps working idempotently with an existing UUID.
+     */
+    public function test_register_installation_updates_existing_uuid(): void {
+        set_config('directus_url', 'https://directus.example.test', 'local_customerportal');
+        set_config('directus_token', 'secret-token', 'local_customerportal');
+        set_config('installation_id', '00000000-0000-4000-8000-000000000123', 'local_customerportal');
+
+        $client = new class () extends api_client {
+            public array $receivedbodies = [];
+
+            public function __construct() {
+            }
+
+            public function post(string $path, array $body): array {
+                $this->receivedbodies[] = $body;
+
+                return [
+                    'data' => [
+                        'id' => '00000000-0000-4000-8000-000000000123',
+                    ],
+                ];
+            }
+        };
+
+        $service = new sync_service(
+            $client,
+            new installation_service($client, '00000000-0000-4000-8000-000000000123'),
+            0
+        );
+        $result = $service->register_installation();
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('updated', $result['mode']);
+        $this->assertSame(
+            '00000000-0000-4000-8000-000000000123',
+            $client->receivedbodies[0]['id']
+        );
+    }
+
+    /**
+     * Invalid backend responses must not overwrite the local installation id.
+     */
+    public function test_register_installation_rejects_invalid_response_id(): void {
+        set_config('directus_url', 'https://directus.example.test', 'local_customerportal');
+        set_config('directus_token', 'secret-token', 'local_customerportal');
+        set_config('installation_id', '', 'local_customerportal');
+
+        $client = new class () extends api_client {
+            public function __construct() {
+            }
+
+            public function post(string $path, array $body): array {
+                return ['data' => ['id' => 'not-a-uuid']];
+            }
+        };
+
+        $service = new sync_service($client, new installation_service($client, ''), 0);
+        $result = $service->register_installation();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('', (string) get_config('local_customerportal', 'installation_id'));
+    }
+
+    /**
+     * Missing admin configuration must fail before any HTTP call is attempted.
+     */
+    public function test_register_installation_requires_directus_config(): void {
+        set_config('directus_url', '', 'local_customerportal');
+        set_config('directus_token', '', 'local_customerportal');
+
+        $client = new class () extends api_client {
+            public bool $called = false;
+
+            public function __construct() {
+            }
+
+            public function post(string $path, array $body): array {
+                $this->called = true;
+                return ['data' => []];
+            }
+        };
+
+        $service = new sync_service($client, new installation_service($client, ''), 0);
+        $result = $service->register_installation();
+
+        $this->assertFalse($result['success']);
+        $this->assertFalse($client->called);
+        $this->assertSame(400, $result['status']);
+    }
+
+    /**
+     * Unauthorized responses must be surfaced as configuration errors.
+     */
+    public function test_register_installation_reports_unauthorized_error(): void {
+        set_config('directus_url', 'https://directus.example.test', 'local_customerportal');
+        set_config('directus_token', 'wrong-token', 'local_customerportal');
+
+        $client = new class () extends api_client {
+            public function __construct() {
+            }
+
+            public function post(string $path, array $body): array {
+                throw new \moodle_exception(
+                    'error_api_unavailable',
+                    'local_customerportal',
+                    '',
+                    null,
+                    'HTTP 401: unauthorized'
+                );
+            }
+        };
+
+        $service = new sync_service($client, new installation_service($client, ''), 0);
+        $result = $service->register_installation();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(401, $result['status']);
+    }
+
+    /**
      * First sync should self-register once when provisioning did not pre-register yet.
      */
     public function test_sync_snapshot_registers_installation_once_as_fallback(): void {

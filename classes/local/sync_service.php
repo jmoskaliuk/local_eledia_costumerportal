@@ -61,15 +61,11 @@ class sync_service {
     }
 
     /**
-     * Build the payload for POST /v1/portal/installations/snapshot.
-     *
-     * `profile`, `site_label` and `storage_quota_gb` come from plugin settings.
-     * `health_overall` is derived via health_service from local cron + task signals
-     * (never hardcoded; see docs/05-quality.md → bug10).
+     * Build the base installation payload shared by registration and snapshot sync.
      *
      * @return array
      */
-    public function build_snapshot_payload(): array {
+    private function build_installation_payload_base(): array {
         global $CFG, $DB, $SITE;
 
         $moodleversion = $this->normalize_moodle_version((string) ($CFG->release ?? ''));
@@ -91,7 +87,6 @@ class sync_service {
         $health = $this->health ?? new health_service();
 
         $payload = [
-            'id' => $this->installationsvc->get_installation_id(),
             'label' => $siteidentifier,
             'flavour' => (string) get_config('local_customerportal', 'flavour') ?: 'lms',
             'moodle_version' => $moodleversion,
@@ -115,6 +110,22 @@ class sync_service {
     }
 
     /**
+     * Build the payload for POST /v1/portal/installations/snapshot.
+     *
+     * `profile`, `site_label` and `storage_quota_gb` come from plugin settings.
+     * `health_overall` is derived via health_service from local cron + task signals
+     * (never hardcoded; see docs/05-quality.md → bug10).
+     *
+     * @return array
+     */
+    public function build_snapshot_payload(): array {
+        $payload = $this->build_installation_payload_base();
+        $payload['id'] = $this->installationsvc->get_installation_id();
+
+        return $payload;
+    }
+
+    /**
      * Build the payload for POST /v1/portal/installations.
      *
      * This path is fallback-only. The primary registration path is shop / provisioning.
@@ -122,7 +133,7 @@ class sync_service {
      * @return array
      */
     public function build_registration_payload(): array {
-        $payload = $this->build_snapshot_payload();
+        $payload = $this->build_installation_payload_base();
         unset(
             $payload['user_count_active_30d'],
             $payload['user_count_total'],
@@ -131,7 +142,93 @@ class sync_service {
             $payload['health_overall']
         );
 
+        $existingid = $this->installationsvc->get_optional_installation_id();
+        if ($existingid === '') {
+            unset($payload['id']);
+        } else {
+            $payload['id'] = $existingid;
+        }
+
         return $payload;
+    }
+
+    /**
+     * Register or update this installation in Directus from the admin UI.
+     *
+     * @return array{success: bool, message: string, level: string, id: ?string, mode: ?string, status: ?int}
+     */
+    public function register_installation(): array {
+        $missing = $this->get_missing_registration_config();
+        if (!empty($missing)) {
+            return [
+                'success' => false,
+                'message' => get_string(
+                    'registration_error_missing_config',
+                    'local_customerportal',
+                    implode(', ', $missing)
+                ),
+                'level' => 'error',
+                'id' => null,
+                'mode' => null,
+                'status' => 400,
+            ];
+        }
+
+        $existingid = $this->installationsvc->get_optional_installation_id();
+        $result = $this->post_with_retry_result(
+            '/v1/portal/installations',
+            $this->build_registration_payload()
+        );
+
+        if ($result['success']) {
+            $returnedid = $this->extract_registration_id($result['response']);
+            if (!$this->is_valid_uuid($returnedid)) {
+                return [
+                    'success' => false,
+                    'message' => get_string('registration_error_invalid_response', 'local_customerportal'),
+                    'level' => 'error',
+                    'id' => null,
+                    'mode' => null,
+                    'status' => null,
+                ];
+            }
+
+            $mode = $existingid === '' ? 'created' : 'updated';
+            $this->store_registration_state($returnedid);
+
+            return [
+                'success' => true,
+                'message' => get_string(
+                    $mode === 'created' ? 'registration_success_created' : 'registration_success_updated',
+                    'local_customerportal'
+                ),
+                'level' => 'success',
+                'id' => $returnedid,
+                'mode' => $mode,
+                'status' => null,
+            ];
+        }
+
+        if ($result['status'] === 409 && $existingid !== '') {
+            $this->store_registration_state($existingid);
+            return [
+                'success' => true,
+                'message' => get_string('registration_success_updated', 'local_customerportal'),
+                'level' => 'warning',
+                'id' => $existingid,
+                'mode' => 'updated',
+                'status' => 409,
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => $this->build_registration_error_message($result['status']),
+            'level' => 'error',
+            'id' => $existingid !== '' ? $existingid : null,
+            'mode' => null,
+            'status' => $result['status'],
+        ];
     }
 
     /**
@@ -232,13 +329,9 @@ class sync_service {
             return true;
         }
 
-        $result = $this->post_with_retry_result(
-            '/v1/portal/installations',
-            $this->build_registration_payload()
-        );
+        $result = $this->register_installation();
 
-        if ($result['success'] || $result['status'] === 409) {
-            set_config('installation_registered', 1, 'local_customerportal');
+        if ($result['success']) {
             return true;
         }
 
@@ -347,19 +440,21 @@ class sync_service {
      *
      * @param string $path
      * @param array $payload
-     * @return array{success: bool, message: string, status: ?int}
+     * @return array{success: bool, message: string, status: ?int, response: ?array}
      */
     private function post_with_retry_result(string $path, array $payload): array {
         $lastmessage = '';
         $laststatus = null;
+        $lastresponse = null;
 
         for ($attempt = 0; $attempt < 3; $attempt++) {
             try {
-                $this->client->post($path, $payload);
+                $response = $this->client->post($path, $payload);
                 return [
                     'success' => true,
                     'message' => '',
                     'status' => null,
+                    'response' => $response,
                 ];
             } catch (\moodle_exception $e) {
                 $lastmessage = $e->getMessage();
@@ -374,7 +469,93 @@ class sync_service {
             'success' => false,
             'message' => $lastmessage,
             'status' => $laststatus,
+            'response' => $lastresponse,
         ];
+    }
+
+    /**
+     * Extract the installation ID from the registration response.
+     *
+     * @param array|null $response
+     * @return string
+     */
+    private function extract_registration_id(?array $response): string {
+        if (!is_array($response)) {
+            return '';
+        }
+
+        $data = $response['data'] ?? null;
+        if (!is_array($data)) {
+            return '';
+        }
+
+        return trim((string) ($data['id'] ?? ''));
+    }
+
+    /**
+     * Validate whether the given value is a UUID string.
+     *
+     * @param string $value
+     * @return bool
+     */
+    private function is_valid_uuid(string $value): bool {
+        return (bool) preg_match(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
+            $value
+        );
+    }
+
+    /**
+     * Store successful registration markers locally.
+     *
+     * @param string $installationid
+     * @return void
+     */
+    private function store_registration_state(string $installationid): void {
+        set_config('installation_id', $installationid, 'local_customerportal');
+        set_config('installation_registered', 1, 'local_customerportal');
+        set_config('last_registration_at', time(), 'local_customerportal');
+        $this->installationsvc->set_installation_id($installationid);
+        $this->installationsvc->invalidate_caches();
+    }
+
+    /**
+     * Return the names of required config values that are still missing.
+     *
+     * @return string[]
+     */
+    private function get_missing_registration_config(): array {
+        $missing = [];
+        if (trim((string) get_config('local_customerportal', 'directus_url')) === '') {
+            $missing[] = get_string('settings_directus_url', 'local_customerportal');
+        }
+        if (trim((string) get_config('local_customerportal', 'directus_token')) === '') {
+            $missing[] = get_string('settings_directus_token', 'local_customerportal');
+        }
+
+        return $missing;
+    }
+
+    /**
+     * Map backend failure classes to admin-friendly messages.
+     *
+     * @param int|null $status
+     * @return string
+     */
+    private function build_registration_error_message(?int $status): string {
+        if ($status === 400) {
+            return get_string('registration_error_bad_request', 'local_customerportal');
+        }
+
+        if ($status === 401 || $status === 403) {
+            return get_string('registration_error_unauthorized', 'local_customerportal');
+        }
+
+        if ($status === 409) {
+            return get_string('registration_error_conflict_missing_id', 'local_customerportal');
+        }
+
+        return get_string('registration_error_network', 'local_customerportal');
     }
 
     /**
