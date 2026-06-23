@@ -1,0 +1,86 @@
+{{!
+    AI setup page.
+    @template local_customerportal/ai_setup
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="path-local-customerportal lh-plugin-shell lh-plugin-shell--wide">
+    {{> local_customerportal/shell_header }}
+
+    <div class="lh-plugin-content-area">
+        <div class="lh-plugin-grid lh-plugin-grid--cols-2" role="list">
+            <article class="lh-plugin-card" role="listitem">
+                <div class="lh-plugin-card__top">
+                    <div class="lh-plugin-card__icon lh-plugin-card__icon--tour" aria-hidden="true">
+                        <i class="fa fa-key"></i>
+                    </div>
+                    <div class="lh-plugin-card__meta">
+                        <div class="lh-plugin-card__kicker lh-eyebrow lh-eyebrow--upper">{{#str}} ai_step_provider, local_customerportal {{/str}}</div>
+                        <h2 class="lh-plugin-card__title">{{#str}} ai_provider_heading, local_customerportal {{/str}}</h2>
+                        <p class="lh-plugin-card__body">{{#str}} ai_provider_body, local_customerportal {{/str}}</p>
+                    </div>
+                </div>
+                {{#can_configure_ai}}
+                <div class="lh-plugin-card__actions">
+                    <a href="{{url_ai_providers}}" class="lh-plugin-btn lh-plugin-btn--open">
+                        <i class="fa fa-gear" aria-hidden="true"></i>
+                        {{#str}} ai_open_providers, local_customerportal {{/str}}
+                    </a>
+                    <a href="{{url_ai_add_provider}}" class="lh-plugin-btn lh-plugin-btn--ghost">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        {{#str}} ai_add_provider, local_customerportal {{/str}}
+                    </a>
+                </div>
+                {{/can_configure_ai}}
+            </article>
+
+            <article class="lh-plugin-card" role="listitem">
+                <div class="lh-plugin-card__top">
+                    <div class="lh-plugin-card__icon lh-plugin-card__icon--community" aria-hidden="true">
+                        <i class="fa fa-bolt"></i>
+                    </div>
+                    <div class="lh-plugin-card__meta">
+                        <div class="lh-plugin-card__kicker lh-eyebrow lh-eyebrow--upper">{{#str}} ai_step_suite, local_customerportal {{/str}}</div>
+                        <h2 class="lh-plugin-card__title">{{#str}} ai_suite_heading, local_customerportal {{/str}}</h2>
+                        <p class="lh-plugin-card__body">{{#str}} ai_suite_body, local_customerportal {{/str}}</p>
+                    </div>
+                </div>
+                <div class="lh-plugin-card__actions">
+                    {{#ai_suite_installed}}
+                    <a href="{{url_ai_suite}}" class="lh-plugin-btn lh-plugin-btn--open">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        {{#str}} ai_open_suite, local_customerportal {{/str}}
+                    </a>
+                    {{/ai_suite_installed}}
+                    {{^ai_suite_installed}}
+                    <a href="{{url_ai_search}}" class="lh-plugin-btn lh-plugin-btn--ghost">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        {{#str}} ai_find_settings, local_customerportal {{/str}}
+                    </a>
+                    {{/ai_suite_installed}}
+                </div>
+            </article>
+        </div>
+
+        <article class="lh-plugin-card mt-4">
+            <div class="lh-plugin-card__top">
+                <div class="lh-plugin-card__icon lh-plugin-card__icon--generic" aria-hidden="true">
+                    <i class="fa fa-list"></i>
+                </div>
+                <div class="lh-plugin-card__meta">
+                    <div class="lh-plugin-card__kicker lh-eyebrow lh-eyebrow--upper">{{#str}} ai_step_actions, local_customerportal {{/str}}</div>
+                    <h2 class="lh-plugin-card__title">{{#str}} ai_actions_heading, local_customerportal {{/str}}</h2>
+                    <p class="lh-plugin-card__body">{{#str}} ai_actions_body, local_customerportal {{/str}}</p>
+                </div>
+            </div>
+            {{#can_configure_ai}}
+            <div class="lh-plugin-card__actions">
+                <a href="{{url_ai_actions}}" class="lh-plugin-btn lh-plugin-btn--ghost">
+                    <i class="fa fa-sliders" aria-hidden="true"></i>
+                    {{#str}} ai_open_actions, local_customerportal {{/str}}
+                </a>
+            </div>
+            {{/can_configure_ai}}
+        </article>
+    </div>
+</div>

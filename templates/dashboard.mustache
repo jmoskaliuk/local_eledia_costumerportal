@@ -60,7 +60,7 @@
         </div>
 
         {{#installation}}
-        <div class="lh-plugin-grid lh-plugin-grid--cols-3" role="list">
+        <div class="lh-plugin-grid lh-plugin-grid--cols-4" role="list">
             <article class="lh-plugin-card" role="listitem">
                 <div class="lh-plugin-card__top">
                     <div class="lh-plugin-card__icon lh-plugin-card__icon--generic" aria-hidden="true">
@@ -93,6 +93,23 @@
                     <a href="{{url_myplugins}}" class="lh-plugin-btn lh-plugin-btn--ghost">
                         <i class="fa fa-arrow-right" aria-hidden="true"></i>
                         {{#str}} nav_myplugins, local_customerportal {{/str}}
+                    </a>
+                </div>
+            </article>
+            <article class="lh-plugin-card" role="listitem">
+                <div class="lh-plugin-card__top">
+                    <div class="lh-plugin-card__icon lh-plugin-card__icon--tour" aria-hidden="true">
+                        <i class="fa fa-bolt"></i>
+                    </div>
+                    <div class="lh-plugin-card__meta">
+                        <div class="lh-plugin-card__kicker lh-eyebrow lh-eyebrow--upper">{{#str}} nav_ai, local_customerportal {{/str}}</div>
+                        <h2 class="lh-plugin-card__title">{{#str}} ai_setup_short, local_customerportal {{/str}}</h2>
+                    </div>
+                </div>
+                <div class="lh-plugin-card__actions">
+                    <a href="{{url_ai_setup}}" class="lh-plugin-btn lh-plugin-btn--ghost">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        {{#str}} ai_open_setup, local_customerportal {{/str}}
                     </a>
                 </div>
             </article>

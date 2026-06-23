@@ -24,6 +24,8 @@ In der aktuellen Session wurden ausgefuehrt:
 ## Empfohlener Smoke-Test
 
 1. Portal in einer Moodle-Instanz mit installiertem `local_lernhive` oeffnen.
-2. Dashboard, `My Installation`, `My Plugins` und `Requests` pruefen.
-3. Neue Anfrage anlegen und sicherstellen, dass sie lokal mit Status `Local` erscheint.
-4. Pruefen, dass kein externer Request fuer Katalog, Sync oder Registrierung ausgefuehrt wird.
+2. Pruefen, dass `Customer Portal` in der Moodle-Topbar nur einmal erscheint.
+3. Dashboard, `Plugins`, `Upgrade`, `AI` und `AI Setup` pruefen.
+4. `Requests` pruefen: Der Link muss zu `https://eledia.de/kontakt` fuehren.
+5. `AI Setup` pruefen: Provider-, Add-Provider- und Action-Settings-Links muessen erreichbar sein.
+6. Pruefen, dass kein externer Request fuer Katalog, Sync oder Registrierung ausgefuehrt wird.

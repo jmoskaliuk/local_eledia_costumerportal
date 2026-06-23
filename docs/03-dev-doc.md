@@ -38,8 +38,8 @@ Beim Spiegeln nur getrackte Plugin-Dateien verwenden, zum Beispiel per `git arch
 
 - `classes/local/installation_service.php`: lokale Installations- und Plugin-Daten.
 - `classes/local/site_info_service.php`: lokale Site-Statistiken.
-- `classes/local/request_service.php`: lokale Request-Persistenz.
-- `index.php`, `installation.php`, `myplugins.php`, `requests.php`: Portal-Seiten.
+- `classes/local/request_service.php`: Legacy-Service fuer lokale Request-Daten; im UI fuehrt `Requests` extern zu eLeDia Kontakt.
+- `index.php`, `installation.php`, `myplugins.php`, `ai.php`, `requests.php`: Portal-Seiten und Redirects.
 - `templates/shell_header.mustache` und `templates/nav_tabs.mustache`: LernHive-kompatible Shell.
 
 ## Entfernte Remote-Pfade
@@ -58,6 +58,33 @@ Die Seiten laden `/local/lernhive/styles.css`, setzen `lh-plugin-shell-page` als
 
 Das Portal nutzt diese Klassen direkt im Mustache-Markup, damit keine PHP-Abhaengigkeit auf LernHive-Output-Klassen entsteht.
 
+Die Portal-Navigation folgt dem Customer-Portal-Zielbild:
+
+- Dashboard
+- Plugins
+- Catalog
+- Requests
+- Upgrade
+- AI
+- AI Setup
+- Invoices
+
+`Requests` und `Invoices` fuehren auf `https://eledia.de/kontakt`. `AI` fuehrt zur LernHive AI Suite, `AI Setup` zur lokalen Setup-Seite des Customer Portals.
+
+Das Plugin registriert keinen eigenen `primary_extend`-Hook mehr, damit der Topbar-Eintrag nicht doppelt erscheint. Der Topbar-Einstieg kommt ueber `local_lernhive`.
+
 ## Requests
 
-`request_service::create()` schreibt lokal in `local_customerportal_request`. Jeder erfolgreich gespeicherte Request bekommt den Status `local`; nur technische Speicherfehler werden als Moodle-Exception gemeldet.
+`requests.php` redirectet direkt auf `https://eledia.de/kontakt`.
+
+`request_service::create()` bleibt nur als Legacy-Service fuer bestehende Daten und Tests erhalten. Im aktiven Portal-UI werden keine neuen lokalen Requests erzeugt.
+
+## AI Setup
+
+`ai.php` ist eine lokale Einrichtungsseite. Sie speichert keine AI-Keys im Customer Portal, sondern verlinkt auf Moodle-Core-AI:
+
+- `/admin/settings.php?section=aiprovider`
+- `/ai/configure.php`
+- `/admin/settings.php?section=manageaiproviders`
+
+Wenn `local_lernhive_ai` installiert ist, verlinkt die Seite zusaetzlich auf `/local/lernhive_ai/index.php`.

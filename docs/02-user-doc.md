@@ -9,7 +9,7 @@ Das Dashboard zeigt eine lokale Uebersicht der Moodle-Installation:
 - Kursanzahl
 - Moodle-Version
 - Anzahl installierter Add-ons
-- Anzahl lokal gespeicherter Requests
+- Einstieg zu Kontakt, AI und AI Setup
 
 ## Meine Installation
 
@@ -21,7 +21,19 @@ Das Dashboard zeigt eine lokale Uebersicht der Moodle-Installation:
 
 ## Anfragen
 
-Portal-Nutzer mit der Capability `local/customerportal:createrequest` koennen neue Anfragen anlegen. Die Anfrage bleibt lokal in Moodle gespeichert und wird nicht automatisch uebertragen.
+`Requests` fuehrt direkt zum eLeDia-Kontaktformular:
+
+```text
+https://eledia.de/kontakt
+```
+
+Damit gibt es im Portal keinen lokalen Anfrage-Posteingang mehr.
+
+## AI Setup
+
+`AI Setup` fuehrt Admins zum lokalen Moodle-AI-Setup. Der User bringt den Key mit; das Portal verlinkt auf die Moodle-AI-Provider-Einstellungen, wo der Key gespeichert wird.
+
+`AI` oeffnet die LernHive AI Suite, wenn `local_lernhive_ai` installiert ist.
 
 ## Kein Remote-Flow
 

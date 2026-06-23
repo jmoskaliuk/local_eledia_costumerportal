@@ -11,18 +11,36 @@
         {{#str}} nav_dashboard, local_customerportal {{/str}}
     </a>
     <a class="lh-plugin-section-nav__item"
-       href="{{url_installation}}" {{#active_installation}}aria-current="page"{{/active_installation}}>
-        <i class="fa fa-server" aria-hidden="true"></i>
-        {{#str}} nav_installation, local_customerportal {{/str}}
-    </a>
-    <a class="lh-plugin-section-nav__item"
        href="{{url_myplugins}}" {{#active_myplugins}}aria-current="page"{{/active_myplugins}}>
-        <i class="fa fa-puzzle-piece" aria-hidden="true"></i>
+        <i class="fa fa-plug" aria-hidden="true"></i>
         {{#str}} nav_myplugins, local_customerportal {{/str}}
     </a>
     <a class="lh-plugin-section-nav__item"
-       href="{{url_requests}}" {{#active_requests}}aria-current="page"{{/active_requests}}>
-        <i class="fa fa-inbox" aria-hidden="true"></i>
+       href="{{url_catalog}}" {{#active_catalog}}aria-current="page"{{/active_catalog}}>
+        <i class="fa fa-cubes" aria-hidden="true"></i>
+        {{#str}} nav_catalog, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item" href="{{url_requests}}">
+        <i class="fa fa-life-ring" aria-hidden="true"></i>
         {{#str}} nav_requests, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_upgrade}}" {{#active_installation}}aria-current="page"{{/active_installation}}>
+        <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+        {{#str}} nav_upgrade, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_ai}}" {{#active_ai}}aria-current="page"{{/active_ai}}>
+        <i class="fa fa-magic" aria-hidden="true"></i>
+        {{#str}} nav_ai, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_ai_setup}}" {{#active_ai_setup}}aria-current="page"{{/active_ai_setup}}>
+        <i class="fa fa-magic" aria-hidden="true"></i>
+        {{#str}} nav_ai_setup, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item" href="{{url_invoices}}">
+        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+        {{#str}} nav_invoices, local_customerportal {{/str}}
     </a>
 </nav>

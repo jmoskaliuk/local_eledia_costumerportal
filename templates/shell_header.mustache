@@ -15,6 +15,20 @@
                 </span>
             </div>
             <p class="lh-plugin-header__subtitle">{{#str}} shell_subtitle, local_customerportal {{/str}}</p>
+            <div class="lh-plugin-header__quicklinks">
+                <a class="lh-plugin-tag" href="{{url_myplugins}}">
+                    <i class="fa fa-plug" aria-hidden="true"></i>
+                    {{#str}} nav_myplugins, local_customerportal {{/str}}
+                </a>
+                <a class="lh-plugin-tag" href="{{url_catalog}}">
+                    <i class="fa fa-cubes" aria-hidden="true"></i>
+                    {{#str}} nav_catalog, local_customerportal {{/str}}
+                </a>
+                <a class="lh-plugin-tag" href="{{url_invoices}}">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                    {{#str}} nav_invoices, local_customerportal {{/str}}
+                </a>
+            </div>
         </div>
     </div>
     {{> local_customerportal/nav_tabs }}

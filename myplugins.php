@@ -126,7 +126,12 @@ $templatedata = [
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
-    'url_requests'     => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
+    'url_catalog'      => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
+    'url_requests'     => 'https://eledia.de/kontakt',
+    'url_upgrade'      => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
+    'url_ai'           => (new \moodle_url('/local/lernhive_ai/index.php'))->out(false),
+    'url_ai_setup'     => (new \moodle_url('/local/customerportal/ai.php'))->out(false),
+    'url_invoices'     => 'https://eledia.de/kontakt',
 ];
 
 echo $OUTPUT->header();
