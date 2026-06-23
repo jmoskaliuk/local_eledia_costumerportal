@@ -4,6 +4,36 @@
 
 Die Lite-Version arbeitet ausschliesslich mit lokalen Moodle-Daten.
 
+## Devflow
+
+Das fuehrende Entwicklungsrepo ist:
+
+```text
+https://github.com/jmoskaliuk/local_eledia_costumerportal
+```
+
+Deploys nach `demo.eledia.ai` laufen ueber den Spiegel im Repo:
+
+```text
+https://github.com/jmoskaliuk/eledia.ai
+```
+
+Der Zielpfad im Deploy-Repo ist:
+
+```text
+custom-plugins/local/customerportal
+```
+
+Standardablauf:
+
+1. Aenderungen im Plugin-Repo `local_eledia_costumerportal` entwickeln.
+2. Lokale Checks ausfuehren: PHP-Lint, `git diff --check`, Template-String-Abgleich.
+3. Commit nach `local_eledia_costumerportal/main` pushen.
+4. Den getrackten Commit-Inhalt nach `eledia.ai/custom-plugins/local/customerportal` spiegeln.
+5. Commit nach `eledia.ai/main` pushen; dieser Stand triggert den Deploy.
+
+Beim Spiegeln nur getrackte Plugin-Dateien verwenden, zum Beispiel per `git archive HEAD`. Lokale Hilfsdateien wie `.DS_Store`, lokale Deploy-Scripts oder temporaere Dateien duerfen nicht in das Deploy-Repo wandern.
+
 ### Wichtige Dateien
 
 - `classes/local/installation_service.php`: lokale Installations- und Plugin-Daten.

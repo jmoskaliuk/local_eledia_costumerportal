@@ -11,6 +11,8 @@
 - [x] Settings auf lokale Profilwerte reduziert
 - [x] Portal-Seiten an LernHive UI/UX angepasst
 - [x] EN/DE-Sprachstrings fuer die Lite-Version bereinigt
+- [x] Plugin-Repo `local_eledia_costumerportal` als fuehrendes Source-Repo dokumentiert
+- [x] Spiegelpfad `eledia.ai/custom-plugins/local/customerportal` fuer den Deploy dokumentiert
 
 ## Offene Folgeaufgaben
 
