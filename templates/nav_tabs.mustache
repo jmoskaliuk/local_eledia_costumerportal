@@ -4,25 +4,25 @@
     @copyright 2026 eLeDia GmbH
     @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
-<ul class="nav nav-tabs mb-4 path-local-customerportal-tabs" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link {{#active_dashboard}}active{{/active_dashboard}}"
-           href="{{url_dashboard}}">{{#str}} nav_dashboard, local_customerportal {{/str}}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{#active_installation}}active{{/active_installation}}"
-           href="{{url_installation}}">{{#str}} nav_installation, local_customerportal {{/str}}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{#active_myplugins}}active{{/active_myplugins}}"
-           href="{{url_myplugins}}">{{#str}} nav_myplugins, local_customerportal {{/str}}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{#active_catalog}}active{{/active_catalog}}"
-           href="{{url_catalog}}">{{#str}} nav_catalog, local_customerportal {{/str}}</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{#active_requests}}active{{/active_requests}}"
-           href="{{url_requests}}">{{#str}} nav_requests, local_customerportal {{/str}}</a>
-    </li>
-</ul>
+<nav class="lh-plugin-section-nav path-local-customerportal-tabs" aria-label="{{#str}} nav_aria_label, local_customerportal {{/str}}">
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_dashboard}}" {{#active_dashboard}}aria-current="page"{{/active_dashboard}}>
+        <i class="fa fa-tachometer" aria-hidden="true"></i>
+        {{#str}} nav_dashboard, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_installation}}" {{#active_installation}}aria-current="page"{{/active_installation}}>
+        <i class="fa fa-server" aria-hidden="true"></i>
+        {{#str}} nav_installation, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_myplugins}}" {{#active_myplugins}}aria-current="page"{{/active_myplugins}}>
+        <i class="fa fa-puzzle-piece" aria-hidden="true"></i>
+        {{#str}} nav_myplugins, local_customerportal {{/str}}
+    </a>
+    <a class="lh-plugin-section-nav__item"
+       href="{{url_requests}}" {{#active_requests}}aria-current="page"{{/active_requests}}>
+        <i class="fa fa-inbox" aria-hidden="true"></i>
+        {{#str}} nav_requests, local_customerportal {{/str}}
+    </a>
+</nav>

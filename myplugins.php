@@ -34,17 +34,17 @@ require_capability('local/customerportal:view', $context);
 $PAGE->set_url('/local/customerportal/myplugins.php');
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('myplugins_heading', 'local_customerportal'));
-$PAGE->set_heading(get_string('myplugins_heading', 'local_customerportal'));
+$PAGE->set_heading('');
 $PAGE->set_pagelayout('standard');
+$PAGE->add_body_class('lh-plugin-shell-page');
+$PAGE->requires->css('/local/lernhive/styles.css');
 
 $installationsvc = new \local_customerportal\local\installation_service();
 $pluginman       = \core_plugin_manager::instance();
 $plugingroups    = [];
 $error           = null;
-$hassynced       = true;
 
 try {
-    $hassynced = $installationsvc->has_synced();
     $rawplugins = $installationsvc->get_installed_plugins();
 
     foreach ($rawplugins as $plugin) {
@@ -58,7 +58,6 @@ try {
 
         $status = (string) ($plugin['status'] ?? 'installed');
         $knownstatus = in_array($status, ['installed', 'outdated', 'deprecated', 'removed'], true);
-        $slug = $plugin['slug'] ?? null;
         $plugintype = clean_param((string) ($plugin['plugin_type'] ?? ''), PARAM_ALPHANUMEXT);
         if ($plugintype === '') {
             $plugintype = $plugininfo->type ?? '';
@@ -101,11 +100,6 @@ try {
             'status_outdated'   => $status === 'outdated',
             'status_deprecated' => $status === 'deprecated',
             'status_removed'    => $status === 'removed',
-            'catalog_entry_id'  => $plugin['catalog_entry_id'] ?? null,
-            'has_catalog_entry' => !empty($plugin['catalog_entry_id']) && !empty($slug),
-            'url_detail'        => !empty($slug)
-                ? (new \moodle_url('/local/customerportal/plugin.php', ['slug' => $slug]))->out(false)
-                : null,
         ];
     }
 
@@ -126,16 +120,12 @@ try {
 $templatedata = [
     'plugin_groups' => array_values($plugingroups),
     'has_plugins'   => !empty($plugingroups),
-    // Distinguish "synced with zero plugins" from "never synced yet" so the
-    // portal can render an explicit not-yet-synchronised state (task37)
-    // instead of the generic empty-list message.
-    'never_synced'     => !$hassynced && empty($plugingroups),
     'error'            => $error,
     'active_myplugins' => true,
+    'section_title'    => get_string('nav_myplugins', 'local_customerportal'),
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
-    'url_catalog'      => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
     'url_requests'     => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
 ];
 

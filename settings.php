@@ -33,46 +33,6 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', $settings);
 
     $settings->add(new admin_setting_heading(
-        'local_customerportal/settings_heading',
-        get_string('settings_heading', 'local_customerportal'),
-        ''
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'local_customerportal/directus_url',
-        get_string('settings_directus_url', 'local_customerportal'),
-        get_string('settings_directus_url_desc', 'local_customerportal'),
-        '',
-        PARAM_URL
-    ));
-
-    $settings->add(new admin_setting_configpasswordunmask(
-        'local_customerportal/directus_token',
-        get_string('settings_directus_token', 'local_customerportal'),
-        get_string('settings_directus_token_desc', 'local_customerportal'),
-        ''
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'local_customerportal/installation_id',
-        get_string('settings_installation_id', 'local_customerportal'),
-        get_string('settings_installation_id_desc', 'local_customerportal'),
-        '',
-        PARAM_ALPHANUMEXT
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'local_customerportal/public_catalog_url',
-        get_string('settings_public_catalog_url', 'local_customerportal'),
-        get_string('settings_public_catalog_url_desc', 'local_customerportal'),
-        '',
-        PARAM_URL
-    ));
-
-    // Installation digital-twin attributes (task33/35) shipped by the snapshot
-    // sync task. Defaults match the common managed-LMS tier so an unconfigured
-    // plugin still produces a valid snapshot payload.
-    $settings->add(new admin_setting_heading(
         'local_customerportal/settings_installation_heading',
         get_string('settings_installation_heading', 'local_customerportal'),
         get_string('settings_installation_heading_desc', 'local_customerportal')

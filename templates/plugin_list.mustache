@@ -4,69 +4,64 @@
     @copyright 2026 eLeDia GmbH
     @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
-<div class="path-local-customerportal">
-    {{> local_customerportal/nav_tabs }}
+<div class="path-local-customerportal lh-plugin-shell lh-plugin-shell--wide">
+    {{> local_customerportal/shell_header }}
 
-    {{#error}}
-    <div class="alert alert-warning">{{error}}</div>
-    {{/error}}
+    <div class="lh-plugin-content-area">
+        {{#error}}
+        <div class="alert alert-warning">{{error}}</div>
+        {{/error}}
 
-    {{^error}}
-    {{#has_plugins}}
-    {{#plugin_groups}}
-    <section class="mb-4">
-        <h3 class="h5">{{type_label}}</h3>
-        <table class="table table-sm table-hover generaltable">
-            <thead>
-                <tr>
-                    <th>{{#str}} installation_label, local_customerportal {{/str}}</th>
-                    <th>{{#str}} myplugins_version, local_customerportal {{/str}}</th>
-                    <th>{{#str}} myplugins_status_header, local_customerportal {{/str}}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#plugins}}
-                <tr>
-                    <td>
-                        {{display_name}}
-                        {{#has_proven}}
-                        <span class="badge bg-success ms-1">{{proven_badge}}</span>
-                        {{/has_proven}}
-                    </td>
-                    <td><code>{{installed_version}}</code></td>
-                    <td>
-                        <span class="badge
-                            {{#status_installed}}bg-success{{/status_installed}}
-                            {{#status_outdated}}bg-warning text-dark{{/status_outdated}}
-                            {{#status_deprecated}}bg-danger{{/status_deprecated}}
-                            {{#status_removed}}bg-secondary{{/status_removed}}">
-                            {{status_label}}
-                        </span>
-                    </td>
-                    <td>
-                        {{#has_catalog_entry}}
-                        <a href="{{url_detail}}" class="btn btn-outline-secondary btn-sm">
-                            {{#str}} plugin_heading, local_customerportal {{/str}}
-                        </a>
-                        {{/has_catalog_entry}}
-                    </td>
-                </tr>
-                {{/plugins}}
-            </tbody>
-        </table>
-    </section>
-    {{/plugin_groups}}
-    {{/has_plugins}}
-    {{^has_plugins}}
-    {{#never_synced}}
-    <div class="alert alert-info">
-        {{#str}} myplugins_never_synced, local_customerportal {{/str}}
+        {{^error}}
+        {{#has_plugins}}
+        {{#plugin_groups}}
+        <article class="lh-plugin-card mb-4">
+            <div class="lh-plugin-card__top">
+                <div class="lh-plugin-card__icon lh-plugin-card__icon--course" aria-hidden="true">
+                    <i class="fa fa-puzzle-piece"></i>
+                </div>
+                <div class="lh-plugin-card__meta">
+                    <div class="lh-plugin-card__kicker lh-eyebrow lh-eyebrow--upper">{{#str}} nav_myplugins, local_customerportal {{/str}}</div>
+                    <h2 class="lh-plugin-card__title">{{type_label}}</h2>
+                </div>
+            </div>
+            <table class="table table-sm table-hover generaltable">
+                <thead>
+                    <tr>
+                        <th>{{#str}} installation_label, local_customerportal {{/str}}</th>
+                        <th>{{#str}} myplugins_version, local_customerportal {{/str}}</th>
+                        <th>{{#str}} myplugins_status_header, local_customerportal {{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#plugins}}
+                    <tr>
+                        <td>
+                            {{display_name}}
+                            {{#has_proven}}
+                            <span class="badge bg-success ms-1">{{proven_badge}}</span>
+                            {{/has_proven}}
+                        </td>
+                        <td><code>{{installed_version}}</code></td>
+                        <td>
+                            <span class="badge
+                                {{#status_installed}}bg-success{{/status_installed}}
+                                {{#status_outdated}}bg-warning text-dark{{/status_outdated}}
+                                {{#status_deprecated}}bg-danger{{/status_deprecated}}
+                                {{#status_removed}}bg-secondary{{/status_removed}}">
+                                {{status_label}}
+                            </span>
+                        </td>
+                    </tr>
+                    {{/plugins}}
+                </tbody>
+            </table>
+        </article>
+        {{/plugin_groups}}
+        {{/has_plugins}}
+        {{^has_plugins}}
+        <p class="text-muted">{{#str}} myplugins_no_plugins, local_customerportal {{/str}}</p>
+        {{/has_plugins}}
+        {{/error}}
     </div>
-    {{/never_synced}}
-    {{^never_synced}}
-    <p class="text-muted">{{#str}} myplugins_no_plugins, local_customerportal {{/str}}</p>
-    {{/never_synced}}
-    {{/has_plugins}}
-    {{/error}}
 </div>

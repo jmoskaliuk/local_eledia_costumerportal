@@ -1,30 +1,28 @@
-# local_customerportal — Features
+# local_customerportal - Features
 
 ## Ziel
 
-`local_customerportal` stellt Kundinnen und Kunden ein Moodle-internes Portal fuer Installationsstatus, Plugins und Requests bereit.
+`local_customerportal` stellt ein Moodle-internes Lite-Portal fuer Installation, Plugins und lokale Requests bereit.
 
-## Feature: Admin-Registrierung der Installation
+## Lokale Installation
 
-Site-Admins koennen die Moodle-Instanz direkt aus dem Plugin bei Directus registrieren oder eine bestehende Registrierung aktualisieren.
+- Zeigt lokale Moodle-Basisdaten wie Release, Nutzerzahlen, Kurse und Cron-Status.
+- Nutzt lokale Plugin-Settings fuer Profilwerte wie Site-Label, Hosting-Profil, SLA und Release-Kanal.
+- Sendet keine Installationsdaten an externe Dienste.
 
-### Nutzerwert
+## Meine Plugins
 
-- Keine manuelle Vorbelegung der `installation_id` mehr notwendig
-- Snapshot- und Plugin-Sync koennen nach einem erfolgreichen Klick sofort weiterarbeiten
-- Konfigurationsfehler werden im Admin-UI sichtbar statt nur indirekt ueber Cron-Logs
+- Liest installierte Add-ons direkt aus Moodle.
+- Gruppiert Plugins nach Plugintyp und zeigt Version sowie lokalen Status.
+- Verwendet keinen Remote-Katalog und keine Overlay-Daten.
 
-### Verhalten
+## Requests
 
-- Wenn keine `installation_id` vorhanden ist, sendet das Plugin eine Erst-Registrierung ohne `id`
-- Wenn bereits eine `installation_id` vorhanden ist, sendet das Plugin eine idempotente Aktualisierung mit `id`
-- Eine gueltige, vom Backend zurueckgelieferte UUID wird lokal gespeichert
-- Erfolgreiche Registrierungen setzen zusaetzlich lokale Erfolgsmarker fuer den Cron-Flow
+- Requests werden lokal in der Moodle-Datenbank gespeichert.
+- Es gibt keinen Sync, keine Registrierung und keine ausgehende API-Uebertragung.
+- Der Status `Local` zeigt an, dass die Anfrage im Portal erfasst wurde.
 
-### Fehlerfaelle
+## LernHive UI
 
-- Fehlende `directus_url` oder `directus_token` blockieren den Call vor dem HTTP-Request
-- `401` oder `403` werden als Konfigurations-/Authentifizierungsfehler kommuniziert
-- `400` wird als ungueltige Server-/Payload-Konfiguration kommuniziert
-- `409` wird bei bestehender lokaler ID als idempotente Aktualisierung behandelt
-- Ungueltige Response-IDs werden nicht gespeichert
+- Die Portal-Seiten verwenden die LernHive Plugin-Shell, Section-Navigation, Cards und Buttons.
+- Das UI bleibt dadurch konsistent mit den bestehenden LernHive-Plugins, ohne eigene Remote-Abhaengigkeiten einzufuehren.

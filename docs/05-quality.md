@@ -1,26 +1,19 @@
-# local_customerportal — Quality
+# local_customerportal - Quality
 
 ## Abgedeckte Logiktests
 
-`tests/sync_service_test.php` deckt den neuen Registrierungsflow ab:
+`tests/request_service_test.php` prueft die lokale Request-Erstellung und Fehlerbehandlung.
 
-- Registrierung ohne vorhandene ID
-- Registrierung mit vorhandener ID
-- ungueltige Response-ID wird verworfen
-- fehlende Konfiguration stoppt vor HTTP-Call
-- `401` wird als Fehlerfall erkannt
+Weitere bestehende Tests decken lokale Health- und Site-Info-Services ab.
 
 ## Durchgefuehrte Verifikation
 
-Syntaxpruefung erfolgreich fuer:
+In der aktuellen Session wurden ausgefuehrt:
 
-- `register_installation.php`
-- `installation.php`
-- `classes/local/installation_service.php`
-- `classes/local/sync_service.php`
-- `tests/sync_service_test.php`
-- `lang/en/local_customerportal.php`
-- `lang/de/local_customerportal.php`
+- PHP-Syntaxpruefung fuer alle PHP-Dateien
+- `git diff --check`
+- Suche nach verbliebenen Remote-/Sync-/Katalog-Codebegriffen
+- Template-String-Abgleich fuer EN und DE
 
 ## Noch offen
 
@@ -30,9 +23,7 @@ Syntaxpruefung erfolgreich fuer:
 
 ## Empfohlener Smoke-Test
 
-1. Plugin konfigurieren mit `directus_url` und `directus_token`
-2. `My Installation` als Site-Admin oeffnen
-3. `Installation registrieren` klicken
-4. Pruefen, dass eine UUID gespeichert und im UI angezeigt wird
-5. Geplante Tasks fuer Snapshot und Plugin-Sync ausfuehren
-6. Pruefen, dass der Sync anschliessend mit der gespeicherten ID arbeitet
+1. Portal in einer Moodle-Instanz mit installiertem `local_lernhive` oeffnen.
+2. Dashboard, `My Installation`, `My Plugins` und `Requests` pruefen.
+3. Neue Anfrage anlegen und sicherstellen, dass sie lokal mit Status `Local` erscheint.
+4. Pruefen, dass kein externer Request fuer Katalog, Sync oder Registrierung ausgefuehrt wird.

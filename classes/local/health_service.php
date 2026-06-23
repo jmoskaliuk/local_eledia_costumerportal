@@ -33,9 +33,7 @@ namespace local_customerportal\local;
  * - amber when cron has not run in the last 2h OR >= 1 task is stuck
  * - green otherwise (includes the "no cron run yet" edge case on fresh sites)
  *
- * The snapshot sync task ships this value as `health_overall`; the field is
- * optional on the wire so a site without a signal returns no value, not a
- * misleading `green`.
+     * The local portal uses this value to summarize site health.
  */
 class health_service {
     /** @var int Hard threshold in seconds: if `lastcronruntime` is older, health is red. */

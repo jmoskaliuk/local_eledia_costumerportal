@@ -32,13 +32,14 @@ if (!get_capability_info('local/customerportal:view')) {
 require_capability('local/customerportal:view', $context);
 
 $action        = optional_param('action', 'list', PARAM_ALPHA);
-$catalogentryid = optional_param('catalog_entry_id', '', PARAM_ALPHANUMEXT);
 
 $PAGE->set_url('/local/customerportal/requests.php', ['action' => $action]);
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('request_heading', 'local_customerportal'));
-$PAGE->set_heading(get_string('request_heading', 'local_customerportal'));
+$PAGE->set_heading('');
 $PAGE->set_pagelayout('standard');
+$PAGE->add_body_class('lh-plugin-shell-page');
+$PAGE->requires->css('/local/lernhive/styles.css');
 
 $requestsvc  = new \local_customerportal\local\request_service();
 $cancreate   = get_capability_info('local/customerportal:createrequest')
@@ -46,22 +47,22 @@ $cancreate   = get_capability_info('local/customerportal:createrequest')
 
 $requests    = [];
 $form        = null;
-$success     = false;
 $error       = null;
 
 $navdata = [
     'active_requests'  => true,
+    'section_title'    => $action === 'new'
+        ? get_string('request_create_heading', 'local_customerportal')
+        : get_string('nav_requests', 'local_customerportal'),
     'url_dashboard'    => (new \moodle_url('/local/customerportal/index.php'))->out(false),
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins'    => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
-    'url_catalog'      => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
     'url_requests'     => (new \moodle_url('/local/customerportal/requests.php'))->out(false),
 ];
 
 if ($action === 'new' && $cancreate) {
     $form = new \local_customerportal\form\request_form(
-        new \moodle_url('/local/customerportal/requests.php', ['action' => 'new']),
-        ['catalog_entry_id' => $catalogentryid]
+        new \moodle_url('/local/customerportal/requests.php', ['action' => 'new'])
     );
 
     if ($form->is_cancelled()) {
@@ -71,8 +72,7 @@ if ($action === 'new' && $cancreate) {
         try {
             $requestsvc->create(
                 $data->request_type,
-                $data->message,
-                !empty($data->catalog_entry_id) ? $data->catalog_entry_id : null
+                $data->message
             );
             redirect(
                 new \moodle_url('/local/customerportal/requests.php'),
@@ -114,6 +114,9 @@ $normalised = [];
 foreach ($requests as $req) {
     $type   = is_array($req) ? ($req['request_type'] ?? '') : ($req->request_type ?? '');
     $status = is_array($req) ? ($req['status'] ?? 'pending') : ($req->status ?? 'pending');
+    if ($status !== 'error') {
+        $status = 'local';
+    }
     $msg    = is_array($req) ? ($req['message'] ?? '') : ($req->message ?? '');
     $ts     = is_array($req) ? ($req['timecreated'] ?? 0) : ($req->timecreated ?? 0);
     $normalised[] = [
@@ -122,8 +125,7 @@ foreach ($requests as $req) {
         'message'            => $msg,
         'status'             => $status,
         'status_label'       => get_string('request_status_' . $status, 'local_customerportal'),
-        'status_pending'     => $status === 'pending',
-        'status_synced'      => $status === 'synced',
+        'status_local'       => $status === 'local',
         'status_error'       => $status === 'error',
         'timecreated_str'    => $ts > 0 ? userdate((int)$ts) : '',
     ];

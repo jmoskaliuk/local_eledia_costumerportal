@@ -34,7 +34,7 @@ class request_form extends \moodleform {
      * Constructor.
      *
      * @param \moodle_url $action
-     * @param array $customdata Keys: catalog_entry_id (optional string).
+     * @param array $customdata Optional form custom data.
      */
     public function __construct(\moodle_url $action, array $customdata = []) {
         parent::__construct($action->out(false), $customdata);
@@ -69,9 +69,6 @@ class request_form extends \moodleform {
         $mform->setType('message', PARAM_TEXT);
         $mform->addRule('message', null, 'required');
         $mform->addHelpButton('message', 'request_message', 'local_customerportal');
-
-        $mform->addElement('hidden', 'catalog_entry_id', $this->_customdata['catalog_entry_id'] ?? '');
-        $mform->setType('catalog_entry_id', PARAM_ALPHANUMEXT);
 
         $this->add_action_buttons(true, get_string('request_submit', 'local_customerportal'));
     }

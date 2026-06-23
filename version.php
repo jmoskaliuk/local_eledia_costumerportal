@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_customerportal';
-$plugin->version   = 2026042000;
+$plugin->version   = 2026062300;
 $plugin->requires  = 2023100900; // Moodle 4.3 minimum (Hooks API).
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.2.0';
+$plugin->release   = '0.3.0';

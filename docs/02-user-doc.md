@@ -1,33 +1,28 @@
-# local_customerportal — User Doc
+# local_customerportal - User Doc
 
-## Admin-Flow: Installation registrieren
+## Dashboard
 
-### Voraussetzung
+Das Dashboard zeigt eine lokale Uebersicht der Moodle-Installation:
 
-- Ein Site-Admin ist in Moodle eingeloggt
-- In den Plugin-Einstellungen sind `Directus base URL` und `Directus API token` gesetzt
+- registrierte Nutzer/innen
+- aktive Nutzer/innen der letzten 30 Tage
+- Kursanzahl
+- Moodle-Version
+- Anzahl installierter Add-ons
+- Anzahl lokal gespeicherter Requests
 
-### Ablauf
+## Meine Installation
 
-1. `My Installation` oeffnen
-2. Im Block `Registrierung und Sync` auf `Installation registrieren` klicken
-3. Nach erfolgreichem Call zeigt das Plugin:
-   - Registrierungsstatus
-   - gespeicherte Installations-ID
-   - Zeitpunkt der letzten Registrierung
+`My Installation` zeigt das lokale Installationsprofil und technische Site-Informationen. Der Cron-Status wird direkt aus Moodle gelesen.
 
-### Folge bei bestehender ID
+## Meine Plugins
 
-Wenn bereits eine Installations-ID vorhanden ist, lautet die Aktion `Installation erneut registrieren / aktualisieren`.
+`My Plugins` listet lokal installierte Add-ons. Standard-Moodle-Plugins werden ausgeblendet, damit die Ansicht auf kundenspezifische Erweiterungen fokussiert bleibt.
 
-### Sichtbarkeit
+## Anfragen
 
-- Der Button ist nur fuer Site-Admins sichtbar
-- Normale Portal-Nutzer sehen nur den Status, aber keine Schreibaktion
+Portal-Nutzer mit der Capability `local/customerportal:createrequest` koennen neue Anfragen anlegen. Die Anfrage bleibt lokal in Moodle gespeichert und wird nicht automatisch uebertragen.
 
-### Fehlermeldungen
+## Kein Remote-Flow
 
-- Fehlende Konfiguration: Hinweis auf fehlende Plugin-Settings
-- Authentifizierungsfehler: Hinweis auf URL/Token
-- Netzwerkfehler: Hinweis auf spaeteren Retry
-- Server-Antwort ohne gueltige UUID: Registrierung wird nicht lokal gespeichert
+Diese Lite-Version hat bewusst keinen Remote-Katalog, keinen Sync und keine externe Registrierung.

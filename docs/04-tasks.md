@@ -1,20 +1,19 @@
-# local_customerportal — Tasks
+# local_customerportal - Tasks
 
 ## Abgeschlossen
 
-- [x] Manuellen Admin-Registrierungsflow fuer Directus implementiert
-- [x] Erst-Registrierung ohne lokale `installation_id` ermoeglicht
-- [x] Re-Registrierung mit bestehender `installation_id` unterstuetzt
-- [x] Rueckgelieferte UUID validiert und lokal gespeichert
-- [x] Erfolgsmarker fuer Cron-Flow gesetzt
-- [x] POST-only-Action mit `sesskey` und Admin-Check hinzugefuegt
-- [x] Status- und Button-UI in `My Installation` integriert
-- [x] EN/DE-Sprachstrings ergaenzt
-- [x] PHPUnit-Logiktests fuer Registrierungsfaelle erweitert
+- [x] Remote-Katalog und Katalog-Templates entfernt
+- [x] Remote-API-Client entfernt
+- [x] Sync-Services und Scheduled Tasks entfernt
+- [x] Installationsregistrierung auf lokale Redirects reduziert
+- [x] Requests auf lokale Speicherung umgestellt
+- [x] Remote-Felder aus dem Install-Schema entfernt
+- [x] Settings auf lokale Profilwerte reduziert
+- [x] Portal-Seiten an LernHive UI/UX angepasst
+- [x] EN/DE-Sprachstrings fuer die Lite-Version bereinigt
 
 ## Offene Folgeaufgaben
 
 - [ ] PHPUnit/Behat in einer echten Moodle-Testumgebung ausfuehren
-- [ ] Optional: Settings-Seite ebenfalls um einen Admin-Button erweitern
-- [ ] Optional: HTTP-Fehler im `api_client` weiter typisieren statt nur per Message-Auswertung
-- [ ] Optional: eigener Capability-Scope fuer Admin-Registrierung statt reinem `require_admin()`
+- [ ] Manueller Browser-Smoke-Test in einer Moodle-Instanz mit installiertem `local_lernhive`
+- [ ] Optional: Request-Workflow fuer lokale Bearbeitung erweitern

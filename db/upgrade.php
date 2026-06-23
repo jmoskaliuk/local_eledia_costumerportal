@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Cache definitions.
+ * Upgrade steps for local_customerportal.
  *
  * @package    local_customerportal
  * @copyright  2026 eLeDia GmbH <info@eledia.de>
@@ -24,4 +24,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$definitions = [];
+/**
+ * Execute local_customerportal upgrade steps.
+ *
+ * @param int $oldversion Previously installed plugin version.
+ * @return bool
+ */
+function xmldb_local_customerportal_upgrade(int $oldversion): bool {
+    global $DB;
+
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2026062300) {
+        $table = new xmldb_table('local_customerportal_request');
+
+        $catalogentryfield = new xmldb_field('catalog_entry_id');
+        if ($dbman->field_exists($table, $catalogentryfield)) {
+            $dbman->drop_field($table, $catalogentryfield);
+        }
+
+        $directusfield = new xmldb_field('directus_id');
+        if ($dbman->field_exists($table, $directusfield)) {
+            $dbman->drop_field($table, $directusfield);
+        }
+
+        upgrade_plugin_savepoint(true, 2026062300, 'local', 'customerportal');
+    }
+
+    return true;
+}

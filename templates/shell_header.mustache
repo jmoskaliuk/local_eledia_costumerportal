@@ -1,0 +1,21 @@
+{{!
+    LernHive-style shell header.
+    @template local_customerportal/shell_header
+    @copyright 2026 eLeDia GmbH
+    @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+<div class="lh-plugin-header lh-plugin-header--has-section-nav">
+    <div class="lh-plugin-header__row">
+        <div class="lh-plugin-header__title-block">
+            <div class="lh-plugin-header__name">
+                <span class="lh-plugin-header__name-text">
+                    {{#str}} pluginname, local_customerportal {{/str}}
+                    <span class="lh-plugin-header__sep" aria-hidden="true">|</span>
+                    <span class="lh-plugin-header__tagline">{{section_title}}</span>
+                </span>
+            </div>
+            <p class="lh-plugin-header__subtitle">{{#str}} shell_subtitle, local_customerportal {{/str}}</p>
+        </div>
+    </div>
+    {{> local_customerportal/nav_tabs }}
+</div>

@@ -1,77 +1,33 @@
-# local_customerportal — Dev Doc
+# local_customerportal - Dev Doc
 
-## Architektur des Registrierungsflows
+## Architektur
 
-### Betroffene Dateien
+Die Lite-Version arbeitet ausschliesslich mit lokalen Moodle-Daten.
 
-- `classes/local/installation_service.php`
-- `classes/local/sync_service.php`
-- `installation.php`
-- `templates/installation_view.mustache`
-- `register_installation.php`
-- `lang/en/local_customerportal.php`
-- `lang/de/local_customerportal.php`
-- `tests/sync_service_test.php`
+### Wichtige Dateien
 
-## Service-Layer
+- `classes/local/installation_service.php`: lokale Installations- und Plugin-Daten.
+- `classes/local/site_info_service.php`: lokale Site-Statistiken.
+- `classes/local/request_service.php`: lokale Request-Persistenz.
+- `index.php`, `installation.php`, `myplugins.php`, `requests.php`: Portal-Seiten.
+- `templates/shell_header.mustache` und `templates/nav_tabs.mustache`: LernHive-kompatible Shell.
 
-### `installation_service`
+## Entfernte Remote-Pfade
 
-Neue Helper:
+Nicht mehr Teil der Lite-Version:
 
-- `get_optional_installation_id()`
-- `has_installation_id()`
-- `set_installation_id()`
+- Remote-API-Client
+- Remote-Katalog
+- Snapshot- oder Plugin-Sync-Tasks
+- Installationsregistrierung bei externen Diensten
+- Remote-IDs in Request- oder Installationsdaten
 
-Zweck:
+## UI-Konvention
 
-- UI und Service koennen den Registrierungszustand pruefen, ohne Exceptions fuer den "noch nicht registriert"-Fall zu missbrauchen
-- Nach erfolgreicher Registrierung kann die neue ID sofort in dieselbe Request-Lifecycle-Instanz uebernommen werden
+Die Seiten laden `/local/lernhive/styles.css`, setzen `lh-plugin-shell-page` als Body-Class und verwenden LernHive-Klassen fuer Shell, Header, Section-Nav, Cards, Grids und Buttons.
 
-### `sync_service`
+Das Portal nutzt diese Klassen direkt im Mustache-Markup, damit keine PHP-Abhaengigkeit auf LernHive-Output-Klassen entsteht.
 
-Die Registrierungslogik ist zentral in `register_installation()` gekapselt.
+## Requests
 
-Wichtige Punkte:
-
-- gemeinsamer Base-Payload fuer Snapshot und Registrierung
-- Erst-Registrierung ohne `id`
-- Re-Registrierung mit `id`
-- UUID-Validierung auf `data.id`
-- Persistenz von:
-  - `installation_id`
-  - `installation_registered`
-  - `last_registration_at`
-
-`ensure_installation_registered()` nutzt dieselbe Logik wie der manuelle Admin-Button, damit kein zweiter, abweichender Codepfad entsteht.
-
-## HTTP- und Sicherheitslogik
-
-### Route
-
-`register_installation.php`
-
-- nur `POST`
-- `require_login()`
-- `require_sesskey()`
-- `require_admin()`
-
-### Fehlerklassifikation
-
-- fehlende lokale Konfiguration vor HTTP-Call
-- `400` -> Konfigurations-/Payload-Fehler
-- `401/403` -> Authentifizierungsfehler
-- `409` mit bestehender lokaler ID -> idempotentes Update
-- ungueltige Response-ID -> Abbruch ohne Persistenz
-
-## UI
-
-`installation.php` liefert zusaetzlich:
-
-- Registrierungsstatus
-- Sync-Status
-- aktuelle Installations-ID
-- Zeitstempel der letzten Registrierung
-- Button-Text nach Erst-/Re-Registrierungsfall
-
-`installation_view.mustache` rendert daraus einen eigenen Block `Registrierung und Sync`.
+`request_service::create()` schreibt lokal in `local_customerportal_request`. Jeder erfolgreich gespeicherte Request bekommt den Status `local`; nur technische Speicherfehler werden als Moodle-Exception gemeldet.

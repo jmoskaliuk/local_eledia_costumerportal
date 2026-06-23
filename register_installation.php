@@ -14,33 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Manual installation registration endpoint.
- *
- * @package    local_customerportal
- * @copyright  2026 eLeDia GmbH <info@eledia.de>
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 require_once(__DIR__ . '/../../config.php');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    throw new \moodle_exception('invalidrequest');
-}
-
 require_login();
-require_sesskey();
-require_admin();
-
-$service = new \local_customerportal\local\sync_service();
-$result = $service->register_installation();
-$redirecturl = new \moodle_url('/local/customerportal/installation.php');
-
-$notificationlevel = \core\output\notification::NOTIFY_ERROR;
-if ($result['success']) {
-    $notificationlevel = $result['level'] === 'warning'
-        ? \core\output\notification::NOTIFY_WARNING
-        : \core\output\notification::NOTIFY_SUCCESS;
-}
-
-redirect($redirecturl, $result['message'], 0, $notificationlevel);
+redirect(new \moodle_url('/local/customerportal/installation.php'));
