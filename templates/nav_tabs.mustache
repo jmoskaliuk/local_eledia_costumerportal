@@ -29,6 +29,7 @@
         <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
         {{#str}} nav_upgrade, local_customerportal {{/str}}
     </a>
+    {{#has_ai}}
     <a class="lh-plugin-section-nav__item"
        href="{{url_ai}}" {{#active_ai}}aria-current="page"{{/active_ai}}>
         <i class="fa fa-magic" aria-hidden="true"></i>
@@ -39,6 +40,7 @@
         <i class="fa fa-magic" aria-hidden="true"></i>
         {{#str}} nav_ai_setup, local_customerportal {{/str}}
     </a>
+    {{/has_ai}}
     <a class="lh-plugin-section-nav__item" href="{{url_invoices}}">
         <i class="fa fa-file-text-o" aria-hidden="true"></i>
         {{#str}} nav_invoices, local_customerportal {{/str}}
