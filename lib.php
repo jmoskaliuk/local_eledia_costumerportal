@@ -21,3 +21,30 @@
  * @copyright  2026 eLeDia GmbH <info@eledia.de>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Support/contact URL for requests and invoices.
+ *
+ * Configurable via the "supporturl" admin setting so the portal can ship to
+ * external customers; defaults to the eLeDia contact page.
+ *
+ * @return string
+ */
+function local_customerportal_support_url(): string {
+    $url = (string) get_config('local_customerportal', 'supporturl');
+    return $url !== '' ? $url : 'https://eledia.de/kontakt';
+}
+
+/**
+ * URL of the AI suite, if available on this site.
+ *
+ * Configurable via the "aiurl" admin setting. Empty by default — when empty,
+ * the AI navigation entries are hidden (external sites have no LernHive AI).
+ *
+ * @return string
+ */
+function local_customerportal_ai_url(): string {
+    return (string) get_config('local_customerportal', 'aiurl');
+}

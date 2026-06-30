@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 
 require_login();
 $context = \core\context\system::instance();
@@ -31,4 +32,4 @@ if (!get_capability_info('local/customerportal:view')) {
 }
 require_capability('local/customerportal:view', $context);
 
-redirect('https://eledia.de/kontakt');
+redirect(local_customerportal_support_url());

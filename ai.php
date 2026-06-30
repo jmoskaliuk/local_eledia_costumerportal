@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 
 require_login();
 $context = \core\context\system::instance();
@@ -37,7 +38,6 @@ $PAGE->set_title(get_string('ai_heading', 'local_customerportal'));
 $PAGE->set_heading('');
 $PAGE->set_pagelayout('standard');
 $PAGE->add_body_class('lh-plugin-shell-page');
-$PAGE->requires->css('/local/lernhive/styles.css');
 
 $aisuiteinstalled = (bool) \core_component::get_plugin_directory('local', 'lernhive_ai');
 $canconfig = has_capability('moodle/site:config', $context);
@@ -49,12 +49,13 @@ $templatedata = [
     'url_installation' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
     'url_myplugins' => (new \moodle_url('/local/customerportal/myplugins.php'))->out(false),
     'url_catalog' => (new \moodle_url('/local/customerportal/catalog.php'))->out(false),
-    'url_requests' => 'https://eledia.de/kontakt',
+    'url_requests' => local_customerportal_support_url(),
     'url_upgrade' => (new \moodle_url('/local/customerportal/installation.php'))->out(false),
-    'url_ai' => (new \moodle_url('/local/lernhive_ai/index.php'))->out(false),
+    'url_ai' => local_customerportal_ai_url(),
+    'has_ai' => local_customerportal_ai_url() !== '',
     'url_ai_setup' => (new \moodle_url('/local/customerportal/ai.php'))->out(false),
-    'url_invoices' => 'https://eledia.de/kontakt',
-    'url_ai_suite' => (new \moodle_url('/local/lernhive_ai/index.php'))->out(false),
+    'url_invoices' => local_customerportal_support_url(),
+    'url_ai_suite' => local_customerportal_ai_url(),
     'url_ai_providers' => (new \moodle_url('/admin/settings.php', ['section' => 'aiprovider']))->out(false),
     'url_ai_add_provider' => (new \moodle_url('/ai/configure.php'))->out(false),
     'url_ai_actions' => (new \moodle_url('/admin/settings.php', ['section' => 'manageaiproviders']))->out(false),

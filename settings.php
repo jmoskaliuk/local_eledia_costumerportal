@@ -46,6 +46,22 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $settings->add(new admin_setting_configtext(
+        'local_customerportal/supporturl',
+        get_string('settings_supporturl', 'local_customerportal'),
+        get_string('settings_supporturl_desc', 'local_customerportal'),
+        'https://eledia.de/kontakt',
+        PARAM_URL
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'local_customerportal/aiurl',
+        get_string('settings_aiurl', 'local_customerportal'),
+        get_string('settings_aiurl_desc', 'local_customerportal'),
+        '',
+        PARAM_URL
+    ));
+
     $settings->add(new admin_setting_configselect(
         'local_customerportal/flavour',
         get_string('settings_flavour', 'local_customerportal'),
